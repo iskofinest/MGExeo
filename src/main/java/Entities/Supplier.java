@@ -47,24 +47,11 @@ public class Supplier implements Serializable {
     @Column(name="fax_no")
     private String faxNo;
     
-    @OneToMany(mappedBy = "material")
+    @OneToMany(mappedBy = "supplier")
     private Set<MaterialSupplier> materialSuppliers = new HashSet<>();
     
-    
-//    @OneToMany(mappedBy = "primaryKey.suppliers",
-//            cascade = CascadeType.ALL)
-//    private Set<ToolSupplier> toolSuppliers = new HashSet<>();
-
     public Supplier() {
     }
-    
-    
-
-//    @Override
-//    public String toString() {
-//        return "Supplier{" + "id=" + id + ", code=" + code + ", name=" + name + ", address=" + address + ", telephone=" + telephone + ", email=" + email + ", contactPerson=" + contactPerson + ", tinNo=" + tinNo + ", faxNo=" + faxNo + 
-//                "\n\tmaterialSuppliers=" + getMaterialSuppliers().toArray().toString() + ",\n\t toolSuppliers=" + getToolSuppliers().toArray().toString() + "\n}";
-//    }
 
     public Supplier(String code, String name, String address, String telephone, String email, String contactPerson, String tinNo, String faxNo) {
         this.code = code;
@@ -149,28 +136,5 @@ public class Supplier implements Serializable {
         this.faxNo = faxNo;
     }
 
-//    public Set<MaterialSupplier> getMaterialSuppliers() {
-//        return materialSuppliers;
-//    }
-//
-//    public void setMaterialSuppliers(Set<MaterialSupplier> materialSuppliers) {
-//        this.materialSuppliers = materialSuppliers;
-//    }
-
-//    public Set<ToolSupplier> getToolSuppliers() {
-//        return toolSuppliers;
-//    }
-
-//    public void setToolSuppliers(Set<ToolSupplier> toolSuppliers) {
-//        this.toolSuppliers = toolSuppliers;
-//    }
-    
-//    public void addToolSupplier(ToolSupplier toolSupplier) {
-//        this.toolSuppliers.add(toolSupplier);
-//    }
-    
-//    public void addMaterialSupplier(MaterialSupplier materialSupplier) {
-//        this.materialSuppliers.add(materialSupplier);
-//    }
     
 }

@@ -2,7 +2,7 @@
 package Entities.JoinedTables;
 
 import Entities.Item.Item;
-import Entities.Item.Tool;
+import Entities.Tool;
 import Entities.Transactions;
 import java.util.Date;
 import javax.persistence.CascadeType;

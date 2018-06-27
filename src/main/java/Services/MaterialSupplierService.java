@@ -1,34 +1,35 @@
-
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package Services;
 
-import Entities.Material;
+import Entities.JoinedTables.MaterialSupplier;
 import javax.swing.JOptionPane;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-public class MaterialService {
+/**
+ *
+ * @author ilovebromanceBRO
+ */
+public class MaterialSupplierService {
     
-    public static boolean saveMaterial(Material material) {
+    public static boolean saveMaterialSupplier(MaterialSupplier materialSupplier) {
         try{
             Session session = Utilities.HibernateUtil.getSessionFactory().openSession();
             Transaction tx = session.beginTransaction();
-            System.out.print(session.save(material) + " ");
+            session.save(materialSupplier);
             tx.commit();
             session.close();
         } catch(Exception e) {
+            e.printStackTrace();
             System.out.println(e.toString());
             JOptionPane.showMessageDialog(null, e.toString(), "ERROR OCCURED", 0);
             return false;
         }
         return true;
-    }
-    
-    public static Material findMaterialById(int materialId) {
-        Material material;
-        Session session = Utilities.HibernateUtil.getSessionFactory().openSession();
-        material = (Material) session.get(Material.class, materialId);
-        session.close();
-        return material;
     }
     
 }

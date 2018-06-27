@@ -1,6 +1,7 @@
 
-package Entities.Item;
+package Entities;
 
+import Entities.Item.Item;
 import Entities.JoinedTables.BorrowTool;
 import Entities.JoinedTables.ToolSupplier;
 import java.io.Serializable;

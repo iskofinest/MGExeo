@@ -1,7 +1,7 @@
 
 package Entities.JoinedTables;
 
-import Entities.Item.Tool;
+import Entities.Tool;
 import Entities.Supplier;
 import java.io.Serializable;
 import java.math.BigDecimal;

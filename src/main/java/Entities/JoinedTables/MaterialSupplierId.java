@@ -1,7 +1,7 @@
 
 package Entities.JoinedTables;
 
-import Entities.Item.Material;
+import Entities.Material;
 import Entities.Supplier;
 import java.io.Serializable;
 import javax.persistence.CascadeType;
@@ -12,10 +12,10 @@ import javax.persistence.ManyToOne;
 public class MaterialSupplierId implements Serializable {
     
     @ManyToOne(cascade = CascadeType.ALL)
-    private Material material;
+    private Supplier supplier;
     
     @ManyToOne(cascade = CascadeType.ALL)
-    private Supplier supplier;
+    private Material material;
 
     public Material getMaterial() {
         return material;

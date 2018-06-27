@@ -1,10 +1,11 @@
 
-package Entities.Item;
+package Entities;
 
 import Entities.JoinedTables.MaterialSupplier;
 import Entities.Supplier;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,11 +16,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "materials")
+@Table(name = "material")
 public class Material implements Serializable{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name="material_id")
     private int id;
     
@@ -31,6 +32,9 @@ public class Material implements Serializable{
     
     @Column(name="unit")
     private String unit;
+    
+    @OneToMany(mappedBy = "material")
+    private Set<MaterialSupplier> materialSuppliers = new HashSet<>();
 
     public String getCode() {
         return code;
@@ -56,10 +60,6 @@ public class Material implements Serializable{
         this.unit = unit;
     }
     
-//    @OneToMany(mappedBy = "materials",
-//            cascade = CascadeType.ALL, targetEntity=MaterialSupplier.class)
-//    private HashSet<MaterialSupplier> materialSuppliers = new HashSet<>(0);
-
     public int getId() {
         return id;
     }
@@ -68,16 +68,5 @@ public class Material implements Serializable{
         this.id = id;
     }
 
-//    public HashSet<MaterialSupplier> getMaterialSuppliers() {
-//        return materialSuppliers;
-//    }
-//
-//    public void setMaterialSuppliers(HashSet<MaterialSupplier> materialSuppliers) {
-//        this.materialSuppliers = materialSuppliers;
-//    }
-//    
-//    public void addMaterialSupplier(MaterialSupplier materialSupplier) {
-//        this.materialSuppliers.add(materialSupplier);
-//    }
     
 }
