@@ -2,7 +2,6 @@
 package Entities;
 
 import Entities.JoinedTables.MaterialSupplier;
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -16,40 +15,19 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "suppliers")
-public class Supplier implements Serializable {
+public class Supplier {
 
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name="supplier_id")
     private int id;
-    
-    @Column(name="code")
     private String code;
-    
-    @Column(name="name")
     private String name;
-    
-    @Column(name="address")
     private String address;
-    
-    @Column(name="telephone")
     private String telephone;
-    
-    @Column(name="email")
     private String email;
-    
-    @Column(name="contact_person")
     private String contactPerson;
-    
-    @Column(name="tin_no")
     private String tinNo;
-    
-    @Column(name="fax_no")
     private String faxNo;
-    
-    @OneToMany(mappedBy = "supplier")
     private Set<MaterialSupplier> materialSuppliers = new HashSet<>();
-    
+
     public Supplier() {
     }
 
@@ -64,6 +42,9 @@ public class Supplier implements Serializable {
         this.faxNo = faxNo;
     }
 
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name="supplier_id")
     public int getId() {
         return id;
     }
@@ -136,5 +117,18 @@ public class Supplier implements Serializable {
         this.faxNo = faxNo;
     }
 
+    @OneToMany(mappedBy = "primaryKey.supplier",
+            cascade = CascadeType.ALL)
+    public Set<MaterialSupplier> getMaterialSuppliers() {
+        return materialSuppliers;
+    }
+
+    public void setMaterialSuppliers(Set<MaterialSupplier> materialSuppliers) {
+        this.materialSuppliers = materialSuppliers;
+    }
+    
+    public void addMaterialSupplier(MaterialSupplier materialSupplier) {
+        this.materialSuppliers.add(materialSupplier);
+    }
     
 }
