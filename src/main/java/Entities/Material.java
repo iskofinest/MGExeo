@@ -43,7 +43,6 @@ public class Material {
         this.id = id;
     }
 
-//    @Column(name="code")
     public String getCode() {
         return code;
     }
@@ -53,7 +52,6 @@ public class Material {
         this.code = code;
     }
 
-//    @Column(name="description")
     public String getDescription() {
         return description;
     }
@@ -71,7 +69,7 @@ public class Material {
         this.unit = unit;
     }
 
-    @OneToMany(mappedBy = "primaryKey.material",
+    @OneToMany(mappedBy = "materialSupplierId.material",
             cascade = CascadeType.ALL)
     public Set<MaterialSupplier> getMaterialSuppliers() {
         return materialSuppliers;

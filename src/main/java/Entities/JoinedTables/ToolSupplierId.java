@@ -11,12 +11,10 @@ import javax.persistence.ManyToOne;
 @Embeddable
 public class ToolSupplierId implements Serializable {
     
-    @ManyToOne(cascade = CascadeType.ALL)
     private Tool tool;
-    
-    @ManyToOne(cascade = CascadeType.ALL)
     private Supplier supplier;
 
+    @ManyToOne(cascade = CascadeType.ALL)
     public Tool getTool() {
         return tool;
     }
@@ -25,6 +23,7 @@ public class ToolSupplierId implements Serializable {
         this.tool = tool;
     }
 
+    @ManyToOne(cascade = CascadeType.ALL)
     public Supplier getSupplier() {
         return supplier;
     }

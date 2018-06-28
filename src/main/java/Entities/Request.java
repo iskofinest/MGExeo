@@ -59,10 +59,10 @@ public class Request implements Serializable {
         this.item = item;
     }
 
-    @Override
-    public String toString() {
-        return "Request{" + "id=" + id + ", quantity=" + quantity + ", item=" + item.getDescription() + '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Request{" + "id=" + id + ", quantity=" + quantity + ", item=" + item.getDescription() + '}';
+//    }
     
     
     

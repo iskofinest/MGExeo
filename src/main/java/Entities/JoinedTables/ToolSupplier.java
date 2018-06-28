@@ -1,49 +1,65 @@
 
 package Entities.JoinedTables;
 
-import Entities.Tool;
 import Entities.Supplier;
+import Entities.Tool;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
 import javax.persistence.AssociationOverride;
 import javax.persistence.AssociationOverrides;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "tool_supplier")
 @AssociationOverrides({
-    @AssociationOverride(name = "primaryKey.tools",
+    @AssociationOverride(name = "toolSupplierId.tools",
         joinColumns = @JoinColumn(name = "tool_id")),
-    @AssociationOverride(name = "primaryKey.suppliers",
+    @AssociationOverride(name = "toolSupplierId.suppliers",
         joinColumns = @JoinColumn(name = "supplier_id")) })
-public class ToolSupplier implements Serializable {
+public class ToolSupplier  {
     
-    private ToolSupplierId primaryKey = new ToolSupplierId();
+    private ToolSupplierId toolSupplierId = new ToolSupplierId();
+    private BigDecimal price;
+
+    @EmbeddedId
+    public ToolSupplierId getToolSupplierId() {
+        return toolSupplierId;
+    }
+
+    public void setToolSupplierId(ToolSupplierId toolSupplierId) {
+        this.toolSupplierId = toolSupplierId;
+    }
     
-//    @Id
-//    @GeneratedValue(strategy=GenerationType.AUTO)
-//    @Column(name="id")
-//    private int id;
-//
-//    @OneToMany(mappedBy = "primaryKey.tools",
-//            cascade = CascadeType.ALL)
-//    private Set<Tool> tools = new HashSet<>(0);
-//    
-//    @Column(name="price")    
-//    private BigDecimal price;
-//    
-//    @OneToMany(mappedBy = "primaryKey.suppliers",
-//            cascade = CascadeType.ALL)
-//    private Set<Supplier> suppliers = new HashSet<Supplier>(0);
+    @Transient
+    public Tool getTool() {
+        return getToolSupplierId().getTool();
+    }
+    
+    public void setTool(Tool tool) {
+        getToolSupplierId().setTool(tool);
+    }
+    
+    @Transient
+    public Supplier getSupplier() {
+        return getToolSupplierId().getSupplier();
+    }
+    
+    public void setSupplier(Supplier supplier) {
+        getToolSupplierId().setSupplier(supplier);
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+    
+    
     
 }

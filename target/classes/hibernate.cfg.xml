@@ -61,8 +61,10 @@ Contributor(s):
     <!--Mention here all the model classes along with their package name-->  
     <mapping class="Entities.User"/>
     <mapping class="Entities.Material"/>
+    <mapping class="Entities.Tool"/>
     <mapping class="Entities.Supplier"/>
     <mapping class="Entities.JoinedTables.MaterialSupplier"/>
+    <mapping class="Entities.JoinedTables.ToolSupplier"/>
     <!--<mapping class="Entities.JoinedTables.MaterialSupplierId"/>-->
     
 <!--    <mapping class="Entities.Project"/>

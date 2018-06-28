@@ -15,41 +15,41 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "material_supplier")
 @AssociationOverrides({
-    @AssociationOverride(name = "primaryKey.material",
+    @AssociationOverride(name = "materialSupplierId.material",
         joinColumns = @JoinColumn(name = "material_id")),
-    @AssociationOverride(name = "primaryKey.supplier",
+    @AssociationOverride(name = "materialSupplierId.supplier",
         joinColumns = @JoinColumn(name = "supplier_id")) })
 public class MaterialSupplier {
     
-    MaterialSupplierId primaryKey = new MaterialSupplierId();
+    MaterialSupplierId materialSupplierId = new MaterialSupplierId();
     
     private BigDecimal price;
 
     @EmbeddedId
-    public MaterialSupplierId getPrimaryKey() {
-        return primaryKey;
+    public MaterialSupplierId getMaterialSupplierId() {
+        return materialSupplierId;
     }
 
-    public void setPrimaryKey(MaterialSupplierId primaryKey) {
-        this.primaryKey = primaryKey;
+    public void setMaterialSupplierId(MaterialSupplierId materialSupplierId) {
+        this.materialSupplierId = materialSupplierId;
     }
 
     @Transient
     public Material getMaterial() {
-        return getPrimaryKey().getMaterial();
+        return getMaterialSupplierId().getMaterial();
     }
 
     public void setMaterial(Material material) {
-        getPrimaryKey().setMaterial(material);
+        getMaterialSupplierId().setMaterial(material);
     }
 
     @Transient
     public Supplier getSupplier() {
-        return getPrimaryKey().getSupplier();
+        return getMaterialSupplierId().getSupplier();
     }
 
     public void setSupplier(Supplier supplier) {
-        getPrimaryKey().setSupplier(supplier);
+        getMaterialSupplierId().setSupplier(supplier);
     }
 
     public BigDecimal getPrice() {

@@ -2,6 +2,7 @@
 package Entities;
 
 import Entities.JoinedTables.MaterialSupplier;
+import Entities.JoinedTables.ToolSupplier;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -26,8 +27,10 @@ public class Supplier {
     private String contactPerson;
     private String tinNo;
     private String faxNo;
+    
     private Set<MaterialSupplier> materialSuppliers = new HashSet<>();
-
+    private Set<ToolSupplier> toolSuppliers = new HashSet<>();
+    
     public Supplier() {
     }
 
@@ -117,7 +120,7 @@ public class Supplier {
         this.faxNo = faxNo;
     }
 
-    @OneToMany(mappedBy = "primaryKey.supplier",
+    @OneToMany(mappedBy = "materialSupplierId.supplier",
             cascade = CascadeType.ALL)
     public Set<MaterialSupplier> getMaterialSuppliers() {
         return materialSuppliers;
@@ -130,5 +133,21 @@ public class Supplier {
     public void addMaterialSupplier(MaterialSupplier materialSupplier) {
         this.materialSuppliers.add(materialSupplier);
     }
+    
+    @OneToMany(mappedBy = "toolSupplierId.supplier",
+            cascade = CascadeType.ALL)
+    public Set<ToolSupplier> getToolSuppliers() {
+        return toolSuppliers;
+    }
+
+    public void setToolSuppliers(Set<ToolSupplier> toolSuppliers) {
+        this.toolSuppliers = toolSuppliers;
+    }
+    
+    public void addToolSupplier(ToolSupplier toolSupplier) {
+        this.toolSuppliers.add(toolSupplier);
+    }
+    
+    
     
 }

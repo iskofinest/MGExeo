@@ -2,7 +2,6 @@
 package Entities;
 
 import Entities.Item.Item;
-import Entities.JoinedTables.BorrowTool;
 import Entities.JoinedTables.ToolSupplier;
 import java.io.Serializable;
 import java.util.Set;
@@ -19,43 +18,61 @@ import javax.persistence.Table;
 @Table(name = "tools")
 public class Tool extends Item implements Serializable {
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="tool_id")
     private int id;
     
-    @Column(name="brand")
+    private String code;
+    private String description;
+    private String unit;
     private String brand;
-    
-    @Column(name="size")
     private String size;
-    
-    @Column(name="color")
     private String color;
     
-    @OneToMany(mappedBy = "primaryKey.tools",
-            cascade = CascadeType.ALL)
-    private Set<BorrowTool> borrowTools;
-    
-    @OneToMany(mappedBy = "primaryKey.tools",
-            cascade = CascadeType.ALL)
     private Set<ToolSupplier> toolSuppliers;
 
     public Tool() {}
 
-    public Tool(String brand, String size, String color, Set<BorrowTool> borrowTools) {
+    public Tool(String code, String description, String unit, String brand, String size, String color) {
+        this.code = code;
+        this.description = description;
+        this.unit = unit;
         this.brand = brand;
         this.size = size;
         this.color = color;
-        this.borrowTools = borrowTools;
     }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name="tool_id")
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 
     public String getBrand() {
@@ -82,14 +99,8 @@ public class Tool extends Item implements Serializable {
         this.color = color;
     }
 
-    public Set<BorrowTool> getBorrowTools() {
-        return borrowTools;
-    }
-
-    public void setBorrowTools(Set<BorrowTool> borrowTools) {
-        this.borrowTools = borrowTools;
-    }
-
+    @OneToMany(mappedBy = "toolSupplierId.tool",
+            cascade = CascadeType.ALL)
     public Set<ToolSupplier> getToolSuppliers() {
         return toolSuppliers;
     }
@@ -98,12 +109,8 @@ public class Tool extends Item implements Serializable {
         this.toolSuppliers = toolSuppliers;
     }
     
-    public void addToolSupplier(ToolSupplier toolSupplier) {
-        this.toolSuppliers.add(toolSupplier);
-    }
     
-    public void addBorrowTool(BorrowTool borrowTool) {
-        this.borrowTools.add(borrowTool);
-    }
+    
+    
     
 }
