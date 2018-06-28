@@ -2,6 +2,7 @@
 package Entities;
 
 import Entities.Item.Item;
+import Entities.JoinedTables.BorrowTool;
 import Entities.JoinedTables.ToolSupplier;
 import java.io.Serializable;
 import java.util.Set;
@@ -28,6 +29,7 @@ public class Tool extends Item implements Serializable {
     private String color;
     
     private Set<ToolSupplier> toolSuppliers;
+    private Set<BorrowTool> borrowTools;
 
     public Tool() {}
 
@@ -108,9 +110,18 @@ public class Tool extends Item implements Serializable {
     public void setToolSuppliers(Set<ToolSupplier> toolSuppliers) {
         this.toolSuppliers = toolSuppliers;
     }
+
+    @OneToMany(mappedBy = "tool", cascade = CascadeType.ALL)
+    public Set<BorrowTool> getBorrowTools() {
+        return borrowTools;
+    }
+
+    public void setBorrowTools(Set<BorrowTool> borrowTools) {
+        this.borrowTools = borrowTools;
+    }
     
-    
-    
-    
+    public void addBorrowTool(BorrowTool borrowTool) {
+        this.borrowTools.add(borrowTool);
+    }
     
 }

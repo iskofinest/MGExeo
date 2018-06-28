@@ -1,6 +1,7 @@
 
 package com.mycompany.mgexeo;
 
+import Entities.JoinedTables.BorrowTool;
 import Entities.JoinedTables.MaterialSupplier;
 import Entities.JoinedTables.ToolSupplier;
 import Entities.Material;
@@ -19,6 +20,7 @@ import Services.ToolService;
 import Services.TransactionService;
 import Services.UserService;
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Date;
 
 public class Tests {
@@ -113,6 +115,24 @@ public class Tests {
         materialRequest.setTransaction(transaction);
         materialRequest.setMaterial(material);
         System.out.println("MATERIAL REQUEST SAVED: " + RequestService.saveRequest(materialRequest));
+        
+    }
+    
+    public static void testBorrowTool() {
+        Tool tool = new Tool("tool code", "tool description", "tool unit", "tool brand", "tool size", "tool color");
+        System.out.println("TOOL SAVED: " + ToolService.saveTool(tool));
+        
+        BorrowTool borrowTool = new BorrowTool();
+        borrowTool.setQuantity(5);
+        borrowTool.setTool(tool);
+        borrowTool.setTotalAmount(BigDecimal.valueOf(1235));
+        borrowTool.setBorrowDate(new Date());
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date()); // Now use today date.
+        c.add(Calendar.DATE, 5);
+        borrowTool.setReturnDate(c.getTime());
+        borrowTool.setTransaction(transaction);
+        System.out.println("BORROW TOOL SAVED: " + ToolService.saveBorrowTool(borrowTool));
         
     }
     

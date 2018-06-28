@@ -1,6 +1,7 @@
 
 package Services;
 
+import Entities.JoinedTables.BorrowTool;
 import Entities.JoinedTables.ToolSupplier;
 import Entities.Tool;
 import javax.swing.JOptionPane;
@@ -37,6 +38,21 @@ public class ToolService {
             Session session = Utilities.HibernateUtil.getSessionFactory().openSession();
             Transaction tx = session.beginTransaction();
             System.out.print(session.save(toolSupplier) + " ");
+            tx.commit();
+            session.close();
+        } catch(Exception e) {
+            System.out.println(e.toString());
+            JOptionPane.showMessageDialog(null, e.toString(), "ERROR OCCURED", 0);
+            return false;
+        }
+        return true;
+    }
+    
+    public static boolean saveBorrowTool(BorrowTool borrowTool) {
+        try{
+            Session session = Utilities.HibernateUtil.getSessionFactory().openSession();
+            Transaction tx = session.beginTransaction();
+            System.out.print(session.save(borrowTool) + " ");
             tx.commit();
             session.close();
         } catch(Exception e) {

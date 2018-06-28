@@ -1,6 +1,7 @@
 
 package Entities;
 
+import Entities.JoinedTables.BorrowTool;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
@@ -31,6 +32,7 @@ public class Transactions {
     private Project project;
     
     private Set<MaterialRequest> materialRequests = new HashSet<>();
+    private Set<BorrowTool> borrowTools = new HashSet<>();
     
 //    @OneToMany(cascade = CascadeType.ALL, mappedBy="transaction")
 //    private Set<BorrowTool> borrowTools = new HashSet<>();
@@ -115,6 +117,19 @@ public class Transactions {
     
     public void addMaterialRequest(MaterialRequest materialRequest) {
         this.materialRequests.add(materialRequest);
+    }
+
+    @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL)
+    public Set<BorrowTool> getBorrowTools() {
+        return borrowTools;
+    }
+
+    public void setBorrowTools(Set<BorrowTool> borrowTools) {
+        this.borrowTools = borrowTools;
+    }
+    
+    public void addBorrowTool(BorrowTool borrowTool) {
+        this.borrowTools.add(borrowTool);
     }
     
 }
