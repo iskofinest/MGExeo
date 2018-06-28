@@ -25,11 +25,11 @@ public class ToolService {
     }
     
     public static Tool findToolById(int toolId) {
-        Tool material;
+        Tool tool;
         Session session = Utilities.HibernateUtil.getSessionFactory().openSession();
-        material = (Tool) session.get(Tool.class, toolId);
+        tool = (Tool) session.get(Tool.class, toolId);
         session.close();
-        return material;
+        return tool;
     }
     
     public static boolean saveToolSupplier(ToolSupplier toolSupplier) {

@@ -47,6 +47,8 @@ public class User implements Serializable {
     @Column(name="authority", length=20, nullable=false)
     private String authority;
 
+    public User() {}
+    
     public User(String employee_id, String username, String password, String firstName, String middleName, String lastName, String authority) {
         this.employee_id = employee_id;
         this.username = username;

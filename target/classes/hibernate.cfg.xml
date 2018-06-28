@@ -59,6 +59,9 @@ Contributor(s):
     <property name="hbm2ddl.auto">create-drop</property>
     
     <!--Mention here all the model classes along with their package name-->  
+    <mapping class="Entities.Project"/>
+    <mapping class="Entities.Transactions"/>
+    <mapping class="Entities.MaterialRequest"/>
     <mapping class="Entities.User"/>
     <mapping class="Entities.Material"/>
     <mapping class="Entities.Tool"/>
