@@ -23,6 +23,8 @@ import java.util.Date;
 
 public class Tests {
     
+    static Material material;
+    
     public static void TestItemEntities() {
         Supplier supplier = new Supplier();
         supplier.setCode("1");
@@ -35,7 +37,7 @@ public class Tests {
         supplier.setFaxNo("sample");
         System.out.println("SUPPLIER SAVED: " + SupplierService.saveSupplier(supplier));
         
-        Material material = new Material();
+        material = new Material();
         material.setCode("123");
         material.setDescription("material description");
         material.setUnit("pcs");
@@ -99,10 +101,17 @@ public class Tests {
     }
     
     public static void testRequest() {
+        material = new Material();
+        material.setCode("123");
+        material.setDescription("material description");
+        material.setUnit("pcs");
+        System.out.println("MATERIAL SAVED: " + MaterialService.saveMaterial(material));
+        
         MaterialRequest materialRequest = new MaterialRequest();
         materialRequest.setQuantity(10);
         materialRequest.setTotalAmount(BigDecimal.valueOf(Double.parseDouble("13579")));
         materialRequest.setTransaction(transaction);
+        materialRequest.setMaterial(material);
         System.out.println("MATERIAL REQUEST SAVED: " + RequestService.saveRequest(materialRequest));
         
     }

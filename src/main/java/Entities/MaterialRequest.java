@@ -22,6 +22,7 @@ public class MaterialRequest implements Serializable {
     private BigDecimal totalAmount;
     
     private Transactions transaction;
+    private Material material;
     
     public MaterialRequest() {}
 
@@ -61,6 +62,16 @@ public class MaterialRequest implements Serializable {
 
     public void setTransaction(Transactions transaction) {
         this.transaction = transaction;
+    }
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "material_id")
+    public Material getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(Material material) {
+        this.material = material;
     }
     
     

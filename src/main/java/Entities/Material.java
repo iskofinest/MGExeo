@@ -21,7 +21,9 @@ public class Material {
     private String code;
     private String description;
     private String unit;
+    
     private Set<MaterialSupplier> materialSuppliers = new HashSet<>();
+    private Set<MaterialRequest> materialRequests = new HashSet<>();
 
     public Material() {
     }
@@ -81,6 +83,19 @@ public class Material {
     
     public void addMaterialSupplier(MaterialSupplier materialSupplier) {
         this.materialSuppliers.add(materialSupplier);
+    }
+
+    @OneToMany(mappedBy = "material", cascade = CascadeType.ALL)
+    public Set<MaterialRequest> getMaterialRequests() {
+        return materialRequests;
+    }
+
+    public void setMaterialRequests(Set<MaterialRequest> materialRequests) {
+        this.materialRequests = materialRequests;
+    }
+    
+    public void addMaterialRequest(MaterialRequest materialRequest) {
+        this.materialRequests.add(materialRequest);
     }
     
 }
