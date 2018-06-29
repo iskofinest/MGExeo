@@ -56,7 +56,7 @@ Contributor(s):
     <property name="show_sql">true</property>
     
     <!--<property name="hbm2ddl.auto">create-drop</property>-->
-    <property name="hbm2ddl.auto">create-drop</property>
+    <property name="hbm2ddl.auto">update</property>
     
     <!--Mention here all the model classes along with their package name-->  
     <mapping class="Entities.Project"/>

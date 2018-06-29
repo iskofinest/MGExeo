@@ -80,6 +80,17 @@ public class Tests {
         
     }
     
+    public static void testUser() {
+        User user = new User("admin", 
+        "admin",
+        "admin",
+        "admin",
+        "admin",
+        "admin",
+        "admin");
+        System.out.println("USER SAVED: " + UserService.saveUser(user));
+        System.out.println("FINISHED");
+    }
     
     static Project project;
     static Transactions transaction;
