@@ -33,7 +33,7 @@ public class Transactions {
     
     private Set<MaterialRequest> materialRequests = new HashSet<>();
     private Set<BorrowTool> borrowTools = new HashSet<>();
-    
+            
 //    @OneToMany(cascade = CascadeType.ALL, mappedBy="transaction")
 //    private Set<BorrowTool> borrowTools = new HashSet<>();
 
