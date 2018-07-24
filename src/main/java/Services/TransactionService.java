@@ -24,11 +24,28 @@ public class TransactionService {
     }
     
     public static Transactions findTransactionById(int transactionId) {
-        Transactions material;
+        Transactions transaction;
         Session session = Utilities.HibernateUtil.getSessionFactory().openSession();
-        material = (Transactions) session.get(Transactions.class, transactionId);
+        transaction = (Transactions) session.get(Transactions.class, transactionId);
         session.close();
-        return material;
+        return transaction;
+    }
+
+    public static boolean updateTransaction(Transactions transactions) {
+        boolean saved = false;
+        try{
+            Session session = Utilities.HibernateUtil.getSessionFactory().openSession();
+            Transaction tx = session.beginTransaction();
+            session.update(transactions);
+            tx.commit();
+            session.close();
+            saved = true;
+            
+        } catch(Exception ex) {
+            saved = false;
+            System.out.println(ex.toString());
+        }
+        return saved;
     }
     
 }

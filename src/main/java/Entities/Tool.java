@@ -123,5 +123,10 @@ public class Tool extends Item implements Serializable {
     public void addBorrowTool(BorrowTool borrowTool) {
         this.borrowTools.add(borrowTool);
     }
+
+    @Override
+    public String toString() {
+        return "Tool{" + "id=" + id + ", code=" + code + ", description=" + description + ", unit=" + unit + ", brand=" + brand + ", size=" + size + ", color=" + color + '}';
+    }
     
 }

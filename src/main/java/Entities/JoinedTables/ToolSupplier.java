@@ -5,6 +5,7 @@ import Entities.Supplier;
 import Entities.Tool;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 import javax.persistence.AssociationOverride;
 import javax.persistence.AssociationOverrides;
 import javax.persistence.EmbeddedId;
@@ -16,13 +17,15 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "tool_supplier")
 @AssociationOverrides({
-    @AssociationOverride(name = "toolSupplierId.tools",
+    @AssociationOverride(name = "toolSupplierId.tool",
         joinColumns = @JoinColumn(name = "tool_id")),
-    @AssociationOverride(name = "toolSupplierId.suppliers",
+    @AssociationOverride(name = "toolSupplierId.supplier",
         joinColumns = @JoinColumn(name = "supplier_id")) })
 public class ToolSupplier  {
     
     private ToolSupplierId toolSupplierId = new ToolSupplierId();
+    
+    private String currency;
     private BigDecimal price;
 
     @EmbeddedId
@@ -50,6 +53,14 @@ public class ToolSupplier  {
     
     public void setSupplier(Supplier supplier) {
         getToolSupplierId().setSupplier(supplier);
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public BigDecimal getPrice() {

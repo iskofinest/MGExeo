@@ -1,5 +1,6 @@
 package Utilities;
 
+import ConstantHandlers.ConstantHandler;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -52,7 +53,7 @@ public class HibernateUtil {
         } catch (Throwable ex) {
             // Log the exception. 
             System.err.println("Initial SessionFactory creation failed." + ex);
-            javax.swing.JOptionPane.showMessageDialog(null, ex.toString(), "ERROR", 0);
+            javax.swing.JOptionPane.showMessageDialog(null, ConstantHandler.DISCONNECTED_MESSAGE, "ERROR", 0);
 //            JSONService.setJSONFile();
             throw new ExceptionInInitializerError(ex);
         }

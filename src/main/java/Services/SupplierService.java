@@ -2,7 +2,9 @@
 package Services;
 
 import Entities.Supplier;
+import java.util.List;
 import javax.swing.JOptionPane;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -29,6 +31,16 @@ public class SupplierService {
         supplier = (Supplier) session.get(Supplier.class, supplierId);
         session.close();
         return supplier;
+    }
+
+    public static List<Supplier> findAll() {
+        String hql = "FROM Supplier";
+        Session session = Utilities.HibernateUtil.getSessionFactory().openSession();
+        Query query = session.createQuery(hql);
+        query.setCacheable(true);
+        List<Supplier> suppliers = query.list();      // no ClassCastException here
+        session.close();
+        return suppliers;
     }
     
 }

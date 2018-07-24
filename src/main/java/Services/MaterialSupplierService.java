@@ -1,19 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package Services;
 
 import Entities.JoinedTables.MaterialSupplier;
+import java.util.List;
 import javax.swing.JOptionPane;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-/**
- *
- * @author ilovebromanceBRO
- */
 public class MaterialSupplierService {
     
     public static boolean saveMaterialSupplier(MaterialSupplier materialSupplier) {
@@ -30,6 +24,15 @@ public class MaterialSupplierService {
             return false;
         }
         return true;
+    }
+
+    public static List<MaterialSupplier> findBySupplierCode(String supplierCode) {
+        String hql = "Select ms from MaterialSupplier ms left join  ms.materialSupplierId.material m left join ms.materialSupplierId.supplier s where s.code=" + supplierCode;
+        Session session = Utilities.HibernateUtil.getSessionFactory().openSession();
+        Query query = session.createQuery(hql);
+        List<MaterialSupplier> materialSupplier = query.list();
+        session.close();
+        return materialSupplier;
     }
     
 }

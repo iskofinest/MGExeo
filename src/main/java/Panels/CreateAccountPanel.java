@@ -1,30 +1,72 @@
 
 package Panels;
 
+import ConstantHandlers.ConstantHandler;
+import Entities.Department;
 import Entities.User;
+import Services.DepartmentService;
 import Services.UserService;
+import java.awt.Color;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.text.JTextComponent;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 public class CreateAccountPanel extends javax.swing.JPanel {
     
     // dialog messages for save user confirmation
-    private final String confirmSaveMessage = "Are you sure you want to create this account?";
-    private final String confirmSaveTitle = "CONFIRM CREATE ACCOUNT";
     
-    // dialog message for unsuccessfully saved user
-    private final String unsuccessfulSaveMessage = "Data was not successfully added to the database!";
-    private final String unsuccessfulSaveTitle = "ERROR OCCURED WHILE SAVING";
+    JTextComponent[] fields;
+    JLabel[] labels;
+    Color color;
+    List<Department> departments;
+    String[] departmentNames;
+    Frame frame;
     
-    // dialog message for successfully saved user
-    private final String successfulSaveMessage = "New user was successfully saved to the database";
-    private final String successfulSaveTitle = "SAVE SUCCESSFUL";
-    
-    public CreateAccountPanel() {
+    public CreateAccountPanel(Frame frame) {
         initComponents();
+        this.frame = frame;
+        departments = DepartmentService.findAll();
+        departmentNames = new String[departments.size()];
+        for(int i=0; i<departments.size(); i++) departmentNames[i] = departments.get(i).getName();
+        cbxDepartment.setModel(new DefaultComboBoxModel(departmentNames));
+        AutoCompleteDecorator.decorate(cbxDepartment);
+        color = lblUsername.getForeground();
+        fields  = new JTextComponent[]{txtConfirmPassword, txtEmployeeId, txtFirstName, txtLastName, txtMiddleName, txtPassword, txtUsername};
+        labels = new JLabel[]{lblConfirmPassword, lblEmployeeId, lblFirstName, lblLastName, lblMiddleName, lblPassword, lblUsername};
+        int i =0;
+        for(JTextComponent component : fields) {
+
+            final int index = i;
+            labels[i].setForeground(Color.RED);
+            component.addKeyListener(new java.awt.event.KeyAdapter() {
+                public void keyPressed(java.awt.event.KeyEvent evt) {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(component.getText().isEmpty()) {
+                                labels[index].setForeground(Color.RED);
+                            } else {
+                                labels[index].setForeground(color);
+                            }
+                        }
+                    });
+                }
+            });
+            i++;
+        }
     }
     
     private void clearAllFields() {
-        cbxAuthority.setSelectedIndex(-1);
+        cbxAuthority.setSelectedIndex(1);
         txtEmployeeId.setText("");
         txtMiddleName.setText("");
         txtFirstName.setText("");
@@ -32,8 +74,78 @@ public class CreateAccountPanel extends javax.swing.JPanel {
         txtUsername.setText("");
         txtPassword.setText("");
         txtConfirmPassword.setText("");
+        for(JLabel label : labels) label.setForeground(Color.RED);
+    }
+    
+    private void createAccount() {
+        int confirmation = JOptionPane.showConfirmDialog(null, ConstantHandler.CONFIRM_SAVE_MESSAGE, ConstantHandler.CONFIRM_SAVE_TITLE, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if(confirmation == 0) {
+            String authority = cbxAuthority.getSelectedItem().toString().trim();
+            String employeeId = txtEmployeeId.getText().trim();
+            String password = String.valueOf(txtPassword.getPassword());
+            String firstName = txtFirstName.getText().trim();
+            String middleName = txtMiddleName.getText().trim();
+            String lastName = txtLastName.getText().trim();
+            String username = txtUsername.getText().trim();
+            Department department = departments.get(cbxDepartment.getSelectedIndex());
+            User user = new User(employeeId, username, password, firstName, middleName, lastName, authority);
+            user.setDepartment(department);
+            boolean saved = UserService.saveUser(user);
+            
+            if(saved) {
+                // if successfully saved
+                JOptionPane.showMessageDialog(null, ConstantHandler.SUCCESSFUL_SAVE_MESSAGE, ConstantHandler.SUCCESSFUL_SAVE_TITLE, JOptionPane.INFORMATION_MESSAGE);
+                clearAllFields();
+            } else {
+                // if not successfully saved
+                JOptionPane.showMessageDialog(null, ConstantHandler.UNSUCCESSFUL_SAVE_MESSAGE, ConstantHandler.UNSUCCESSFUL_SAVE_TITLE, JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 
+    private boolean confirmedToCreate() {
+        // if some field is empty
+        for(JTextComponent field : fields) {
+            if(field.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Please complete " + field.getToolTipText(), "UNABLE TO CREATE NEW USER", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        }
+        // if password not matched to confirm password
+        if(!String.valueOf(txtPassword.getPassword()).equals(String.valueOf(txtConfirmPassword.getPassword()))) {
+            JOptionPane.showMessageDialog(null, "Password not matched", "UNABLE TO CREATE NEW USER", JOptionPane.ERROR_MESSAGE);
+                return false;
+        }
+        if(UserService.isUserIdExists(txtEmployeeId.getText().trim())) {
+            JOptionPane.showMessageDialog(null, "User Exists", "UNABLE TO CREATE NEW USER", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+    
+    private void openDialog(CreateDepartment panel)
+    {
+//        final JDialog dialog = new JDialog("CREATE ACCOUNT", true);
+//        final JButton button = new JButton("custom button");
+//        button.setSize(33, 19);
+//        button.addActionListener(new ActionListener()
+//        {
+//            @Override
+//            public void actionPerformed(ActionEvent e)
+//            {
+//                System.out.println(button.getActionCommand());
+//                System.out.println(dialog.getSize());
+//                dialog.dispose();
+//            }
+//        });
+//        JButton[] buttons = { button };
+//
+//        dialog.getContentPane().add(panel);
+//        dialog.setSize(1000, 320);
+//        dialog.setLocationRelativeTo(this);
+//        dialog.setVisible(true);
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -50,7 +162,10 @@ public class CreateAccountPanel extends javax.swing.JPanel {
         txtMiddleName = new javax.swing.JTextField();
         txtFirstName = new javax.swing.JTextField();
         txtEmployeeId = new javax.swing.JTextField();
-        lblErrorMessage = new javax.swing.JLabel();
+        lblLastName1 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        btnAddDepartment = new javax.swing.JButton();
+        cbxDepartment = new javax.swing.JComboBox<>();
         jPanel2 = new javax.swing.JPanel();
         lblUsername = new javax.swing.JLabel();
         txtUsername = new javax.swing.JTextField();
@@ -62,10 +177,11 @@ public class CreateAccountPanel extends javax.swing.JPanel {
         cbxAuthority = new javax.swing.JComboBox<>();
         btnCreateAccount = new javax.swing.JButton();
 
-        setMaximumSize(new java.awt.Dimension(960, 270));
-        setPreferredSize(new java.awt.Dimension(960, 270));
+        setMaximumSize(new java.awt.Dimension(1000, 300));
+        setPreferredSize(new java.awt.Dimension(960, 300));
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
+        jPanel1.setMaximumSize(new java.awt.Dimension(970, 290));
         jPanel1.setPreferredSize(new java.awt.Dimension(962, 265));
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
@@ -94,26 +210,57 @@ public class CreateAccountPanel extends javax.swing.JPanel {
 
         txtLastName.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         txtLastName.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtLastName.setToolTipText("Last Name Field");
         txtLastName.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         txtMiddleName.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         txtMiddleName.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtMiddleName.setToolTipText("Middle Name Field");
         txtMiddleName.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         txtFirstName.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         txtFirstName.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtFirstName.setToolTipText("First Name Field");
         txtFirstName.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         txtEmployeeId.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         txtEmployeeId.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtEmployeeId.setToolTipText("Employee ID field");
         txtEmployeeId.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        lblErrorMessage.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        lblErrorMessage.setForeground(new java.awt.Color(255, 0, 0));
-        lblErrorMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblErrorMessage.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        lblErrorMessage.setMaximumSize(new java.awt.Dimension(2, 35));
-        lblErrorMessage.setMinimumSize(new java.awt.Dimension(2, 35));
+        lblLastName1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        lblLastName1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lblLastName1.setText("DEPARTMENT*");
+
+        btnAddDepartment.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddDepartmentActionPerformed(evt);
+            }
+        });
+
+        cbxDepartment.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        cbxDepartment.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(cbxDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnAddDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(cbxDepartment, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                    .addComponent(btnAddDepartment, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, 0))
+        );
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -121,23 +268,23 @@ public class CreateAccountPanel extends javax.swing.JPanel {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(23, 23, 23)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lblErrorMessage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lblLastName, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(lblFirstName, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(lblEmployeeId, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(lblMiddleName, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)))
-                        .addGap(25, 25, 25)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txtEmployeeId, javax.swing.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE)
-                                .addComponent(txtFirstName)
-                                .addComponent(txtMiddleName))
-                            .addComponent(txtLastName, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblLastName, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(lblFirstName, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblEmployeeId, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblMiddleName, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE))
+                    .addComponent(lblLastName1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(25, 25, 25)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtEmployeeId, javax.swing.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE)
+                            .addComponent(txtFirstName)
+                            .addComponent(txtMiddleName))
+                        .addComponent(txtLastName, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -159,9 +306,11 @@ public class CreateAccountPanel extends javax.swing.JPanel {
                         .addGap(18, 18, 18)
                         .addComponent(txtLastName, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lblLastName, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblErrorMessage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(3, 3, 3))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblLastName1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -173,6 +322,7 @@ public class CreateAccountPanel extends javax.swing.JPanel {
 
         txtUsername.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         txtUsername.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtUsername.setToolTipText("Username Field");
         txtUsername.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         txtUsername.setName("USERNAME"); // NOI18N
 
@@ -181,18 +331,15 @@ public class CreateAccountPanel extends javax.swing.JPanel {
         lblPassword.setText("PASSWORD*");
 
         txtPassword.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtPassword.setToolTipText("Password Field");
         txtPassword.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        txtPassword.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtPasswordActionPerformed(evt);
-            }
-        });
 
         lblConfirmPassword.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         lblConfirmPassword.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblConfirmPassword.setText("CONFIRM PASSWORD*");
 
         txtConfirmPassword.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtConfirmPassword.setToolTipText("Confirm Password Field");
         txtConfirmPassword.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         lblContactNumber.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
@@ -200,7 +347,7 @@ public class CreateAccountPanel extends javax.swing.JPanel {
         lblContactNumber.setText("AUTHORITY*");
 
         cbxAuthority.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        cbxAuthority.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "REQUISITIONER", "MMD", "ADMIN" }));
+        cbxAuthority.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "REQUISITIONER", "MMD", "WAREHOUSE ADMIN" }));
         cbxAuthority.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         btnCreateAccount.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
@@ -232,7 +379,7 @@ public class CreateAccountPanel extends javax.swing.JPanel {
                                     .addComponent(lblContactNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(20, 20, 20)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cbxAuthority, 0, 293, Short.MAX_VALUE)
+                            .addComponent(cbxAuthority, 0, 291, Short.MAX_VALUE)
                             .addComponent(txtPassword)
                             .addComponent(txtConfirmPassword)
                             .addComponent(txtUsername))))
@@ -259,7 +406,7 @@ public class CreateAccountPanel extends javax.swing.JPanel {
                     .addComponent(txtConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(14, 14, 14)
                 .addComponent(btnCreateAccount, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -279,18 +426,18 @@ public class CreateAccountPanel extends javax.swing.JPanel {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(26, 26, 26)
                 .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(0, 0, 0)
                 .addComponent(jLabel3)
-                .addGap(249, 249, 249))
+                .addGap(233, 233, 233))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addGap(20, 20, 20))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -301,56 +448,40 @@ public class CreateAccountPanel extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCreateAccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateAccountActionPerformed
-        // TODO add your handling code here:\
-        String password = String.valueOf(txtPassword.getPassword());
-        int confirmation = JOptionPane.showConfirmDialog(null, confirmSaveMessage, confirmSaveTitle, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-        if(confirmation == 0) {
-            String authority = cbxAuthority.getSelectedItem().toString().trim();
-            String employeeId = txtEmployeeId.getText().trim();
-            String firstName = txtFirstName.getText().trim();
-            String middleName = txtMiddleName.getText().trim();
-            String lastName = txtLastName.getText().trim();
-            String username = txtUsername.getText().trim();
-            User user = new User(employeeId, username, password, firstName, middleName, lastName, authority);
-            boolean saved = UserService.saveUser(user);
-            
-            if(saved) {
-                // if successfully saved
-                JOptionPane.showMessageDialog(null, successfulSaveMessage, successfulSaveTitle, JOptionPane.INFORMATION_MESSAGE);
-                clearAllFields();
-            } else {
-                // if not successfully saved
-                JOptionPane.showMessageDialog(null, unsuccessfulSaveMessage, unsuccessfulSaveTitle, JOptionPane.ERROR_MESSAGE);
-            }
-            
+        if(confirmedToCreate()) {
+            createAccount();
         }
 
     }//GEN-LAST:event_btnCreateAccountActionPerformed
 
-    private void txtPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordActionPerformed
+    private void btnAddDepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDepartmentActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtPasswordActionPerformed
+        openDialog(new CreateDepartment());
+    }//GEN-LAST:event_btnAddDepartmentActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddDepartment;
     private javax.swing.JButton btnCreateAccount;
     private javax.swing.JComboBox<String> cbxAuthority;
+    private javax.swing.JComboBox<String> cbxDepartment;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JLabel lblConfirmPassword;
     private javax.swing.JLabel lblContactNumber;
     private javax.swing.JLabel lblEmployeeId;
-    private javax.swing.JLabel lblErrorMessage;
     private javax.swing.JLabel lblFirstName;
     private javax.swing.JLabel lblLastName;
+    private javax.swing.JLabel lblLastName1;
     private javax.swing.JLabel lblMiddleName;
     private javax.swing.JLabel lblPassword;
     private javax.swing.JLabel lblUsername;

@@ -71,14 +71,15 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="jLabel1" max="32767" attributes="0"/>
-                      <Group type="102" attributes="0">
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          <Component id="btnBack" min="-2" pref="77" max="-2" attributes="0"/>
-                      </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="447" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="btnBack" alignment="1" min="-2" pref="77" max="-2" attributes="0"/>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="447" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
                       </Group>
                   </Group>
               </Group>
@@ -211,7 +212,7 @@
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="4"/>
                     <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-                      <ComponentRef name="txtEmployeeId"/>
+                      <ComponentRef name="lblFirstName"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="FIRST NAME*"/>
                   </Properties>
@@ -223,7 +224,7 @@
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="4"/>
                     <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-                      <ComponentRef name="txtFirstName"/>
+                      <ComponentRef name="lblMiddleName"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="MIDDLE NAME*"/>
                   </Properties>
@@ -235,7 +236,7 @@
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="4"/>
                     <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-                      <ComponentRef name="txtMiddleName"/>
+                      <ComponentRef name="txtLastName"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="LAST NAME*"/>
                   </Properties>
@@ -247,7 +248,7 @@
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="4"/>
                     <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-                      <ComponentRef name="txtLastName"/>
+                      <ComponentRef name="txtEmployeeId"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="EMPLOYEE ID*"/>
                   </Properties>
@@ -346,7 +347,7 @@
                                           <Group type="103" groupAlignment="1" attributes="0">
                                               <Component id="lblUsername" alignment="1" min="-2" pref="131" max="-2" attributes="0"/>
                                               <Component id="lblPassword" alignment="1" min="-2" pref="131" max="-2" attributes="0"/>
-                                              <Component id="lblContactNumber" alignment="1" min="-2" pref="131" max="-2" attributes="0"/>
+                                              <Component id="lblAuthority" alignment="1" min="-2" pref="131" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
                                   </Group>
@@ -368,7 +369,7 @@
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="lblContactNumber" min="-2" pref="30" max="-2" attributes="0"/>
+                              <Component id="lblAuthority" min="-2" pref="30" max="-2" attributes="0"/>
                               <Component id="cbxAuthority" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -467,15 +468,12 @@
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="lblContactNumber">
+                <Component class="javax.swing.JLabel" name="lblAuthority">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Tahoma" size="12" style="1"/>
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="4"/>
-                    <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-                      <ComponentRef name="default"/>
-                    </Property>
                     <Property name="text" type="java.lang.String" value="AUTHORITY*"/>
                   </Properties>
                 </Component>

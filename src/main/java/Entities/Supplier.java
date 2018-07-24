@@ -147,7 +147,10 @@ public class Supplier {
     public void addToolSupplier(ToolSupplier toolSupplier) {
         this.toolSuppliers.add(toolSupplier);
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return "Supplier{" + "id=" + id + ", code=" + code + ", name=" + name + ", address=" + address + ", telephone=" + telephone + ", email=" + email + ", contactPerson=" + contactPerson + ", tinNo=" + tinNo + ", faxNo=" + faxNo + '}';
+    }
     
 }

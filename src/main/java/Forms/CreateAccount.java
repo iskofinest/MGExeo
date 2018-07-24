@@ -1,11 +1,8 @@
 
 package Forms;
 
-import Services.UserService;
 import java.awt.Color;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -34,6 +31,8 @@ public class CreateAccount extends javax.swing.JFrame {
     int questionIcon = JOptionPane.QUESTION_MESSAGE;
     
     JFrame previousForm;
+    JTextComponent[] fields;
+    JLabel[] labels;
     
 //    private boolean catchRequired = false;
     
@@ -42,7 +41,37 @@ public class CreateAccount extends javax.swing.JFrame {
     }
     
     public CreateAccount(javax.swing.JFrame previousForm) {
-      
+        fields  = new JTextComponent[]{txtConfirmPassword, txtEmployeeId, txtFirstName, txtLastName, txtMiddleName, txtPassword, txtUsername};
+        labels = new JLabel[]{lblConfirmPassword, lblEmployeeId, lblFirstName, lblLastName, lblMiddleName, lblPassword, lblUsername};
+        int i =0;
+        for(JTextComponent component : fields) {
+            //
+//            component.setBackground(Color.RED);
+//            component.addFocusListener(new java.awt.event.FocusAdapter() {
+//                public void focusGained(java.awt.event.FocusEvent evt) {
+//                    componentFocusGained(component, evt);
+//                }
+//            });
+            final int index = i;
+            labels[i].setForeground(Color.RED);
+            component.addKeyListener(new java.awt.event.KeyAdapter() {
+                public void keyPressed(java.awt.event.KeyEvent evt) {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(component.getText().isEmpty()) {
+                                System.out.println("RED");
+                                labels[index].setForeground(Color.RED);
+                            } else {
+                                System.out.println("DEFAULT");
+                                labels[index].setForeground(color);
+                            }
+                        }
+                    });
+                }
+            });
+            i++;
+        }
     }
     
     //void confirmation password
@@ -140,7 +169,7 @@ public class CreateAccount extends javax.swing.JFrame {
         txtPassword = new javax.swing.JPasswordField();
         lblConfirmPassword = new javax.swing.JLabel();
         txtConfirmPassword = new javax.swing.JPasswordField();
-        lblContactNumber = new javax.swing.JLabel();
+        lblAuthority = new javax.swing.JLabel();
         cbxAuthority = new javax.swing.JComboBox<>();
         btnCreateAccount = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
@@ -170,22 +199,22 @@ public class CreateAccount extends javax.swing.JFrame {
 
         lblFirstName.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         lblFirstName.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lblFirstName.setLabelFor(txtEmployeeId);
+        lblFirstName.setLabelFor(lblFirstName);
         lblFirstName.setText("FIRST NAME*");
 
         lblMiddleName.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         lblMiddleName.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lblMiddleName.setLabelFor(txtFirstName);
+        lblMiddleName.setLabelFor(lblMiddleName);
         lblMiddleName.setText("MIDDLE NAME*");
 
         lblLastName.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         lblLastName.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lblLastName.setLabelFor(txtMiddleName);
+        lblLastName.setLabelFor(txtLastName);
         lblLastName.setText("LAST NAME*");
 
         lblEmployeeId.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         lblEmployeeId.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lblEmployeeId.setLabelFor(txtLastName);
+        lblEmployeeId.setLabelFor(txtEmployeeId);
         lblEmployeeId.setText("EMPLOYEE ID*");
 
         txtLastName.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
@@ -291,9 +320,9 @@ public class CreateAccount extends javax.swing.JFrame {
         txtConfirmPassword.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtConfirmPassword.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        lblContactNumber.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        lblContactNumber.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lblContactNumber.setText("AUTHORITY*");
+        lblAuthority.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        lblAuthority.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lblAuthority.setText("AUTHORITY*");
 
         cbxAuthority.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         cbxAuthority.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "EMPLOYEE", "ADMIN" }));
@@ -325,7 +354,7 @@ public class CreateAccount extends javax.swing.JFrame {
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(lblUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(lblPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(lblContactNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(lblAuthority, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(20, 20, 20)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(cbxAuthority, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -339,7 +368,7 @@ public class CreateAccount extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblContactNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblAuthority, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cbxAuthority, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -415,13 +444,13 @@ public class CreateAccount extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel3)
-                        .addGap(447, 447, 447))))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnBack, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(447, 447, 447))))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -530,8 +559,8 @@ public class CreateAccount extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JLabel lblAuthority;
     private javax.swing.JLabel lblConfirmPassword;
-    private javax.swing.JLabel lblContactNumber;
     private javax.swing.JLabel lblEmployeeId;
     private javax.swing.JLabel lblErrorMessage;
     private javax.swing.JLabel lblFirstName;

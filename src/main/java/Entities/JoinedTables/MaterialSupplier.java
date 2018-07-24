@@ -23,6 +23,7 @@ public class MaterialSupplier {
     
     MaterialSupplierId materialSupplierId = new MaterialSupplierId();
     
+    private String currency;
     private BigDecimal price;
 
     @EmbeddedId
@@ -52,6 +53,14 @@ public class MaterialSupplier {
         getMaterialSupplierId().setSupplier(supplier);
     }
 
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+    
     public BigDecimal getPrice() {
         return price;
     }

@@ -63,6 +63,7 @@ Contributor(s):
     <mapping class="Entities.Transactions"/>
     <mapping class="Entities.MaterialRequest"/>
     <mapping class="Entities.User"/>
+    <mapping class="Entities.Department"/>
     <mapping class="Entities.Material"/>
     <mapping class="Entities.Tool"/>
     <mapping class="Entities.Supplier"/>

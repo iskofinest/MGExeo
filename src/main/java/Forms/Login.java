@@ -1,40 +1,24 @@
 package Forms;
 
+import Forms.WarehouseAdmin.Warehouse_Account;
+import Forms.Requisitioner.Requisitioner_Account;
 import ConstantHandlers.ConstantHandler;
 import Entities.User;
 import Panels.CreateAccountPanel;
 import Services.UserService;
 import java.awt.Frame;
-import java.awt.GridLayout;
-import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 public class Login extends javax.swing.JFrame {
     
     // <editor-fold defaultstate="fold" desc="CLASS VARIABLES">   
-    // dialog messages for invalid user login info
-    private final String invalidityMessage = "Invalid User Login info";
-    private final String invalidityTitle = "ACCESS DENIED";
-    
-    // dialog messages for valid user info
-    private String welcomeMessage = "WELCOME ";
-    private final String welcomeTitle = "ACCESS GRANTED";
-    
-    //dialog messages for confirmation to exit
-    private final String confirmExitMessage = "Are you sure you want to cancel / exit the program?";
-    private final String confirmExitTitle = "CONFIRM EXIT";
     
     // </editor-fold> 
     
@@ -62,38 +46,46 @@ public class Login extends javax.swing.JFrame {
     }
     
     private boolean clearToLogin() {
-        boolean clearToLog = false;
         // if incomplete form
-        if(txtUserId.getText().length()<1 || String.valueOf(txtPassword.getPassword()).length()<1) {
-            JOptionPane.showMessageDialog(null, "Please complete log-in form", invalidityTitle, JOptionPane.WARNING_MESSAGE);
+        if(txtUserId.getText().length()<1 || txtPassword.getPassword().length < 1) {
+            JOptionPane.showMessageDialog(null, ConstantHandler.INCOMPLETE_FORM_MESSAGE, ConstantHandler.INVALIDITY_TITLE, JOptionPane.WARNING_MESSAGE);
             return false;
         }
         
+        if(txtUserId.getText().length()<6 || txtPassword.getPassword().length < 6) {
+            JOptionPane.showMessageDialog(null, ConstantHandler.LESS_THAN_6_CHAR_MESSAGE, ConstantHandler.INVALIDITY_TITLE, JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        
+        if(txtUserId.getText().length()>20 || txtPassword.getPassword().length > 20) {
+            JOptionPane.showMessageDialog(null, ConstantHandler.MAX_CHAR_MESSAGE, ConstantHandler.INVALIDITY_TITLE, JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
 
         for(char userIdChar : txtUserId.getText().toCharArray()) {
             boolean contains = false;
-            for(char constantChar : ConstantHandler.unameAllowedChars.toCharArray()) {
+            for(char constantChar : ConstantHandler.UNAME_ALLOWED_CHARS.toCharArray()) {
                 if(constantChar == userIdChar) {
                     contains = true;
                     break;
                 }
             }
             if(!contains) {
-                JOptionPane.showMessageDialog(null, "Special character is not allowed in the User ID", invalidityTitle, JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, ConstantHandler.SPECIAL_CHAR_MESSAGE, ConstantHandler.INVALIDITY_TITLE, JOptionPane.WARNING_MESSAGE);
                 return false;
             }
         }
         
         for(char userIdChar : txtPassword.getPassword()) {
             boolean contains = false;
-            for(char constantChar : ConstantHandler.unameAllowedChars.toCharArray()) {
+            for(char constantChar : ConstantHandler.UNAME_ALLOWED_CHARS.toCharArray()) {
                 if(constantChar == userIdChar) {
                     contains = true;
                     break;
                 }
             }
             if(!contains) {
-                JOptionPane.showMessageDialog(null, "Special character is not allowed in the Password", invalidityTitle, JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, ConstantHandler.SPECIAL_CHAR_MESSAGE, ConstantHandler.INVALIDITY_TITLE, JOptionPane.WARNING_MESSAGE);
                 return false;
             }
         }
@@ -103,7 +95,6 @@ public class Login extends javax.swing.JFrame {
     
     private void login() {
         if(clearToLogin()) {
-            System.out.println("clear to login");
             SwingUtilities.invokeLater(() -> {
                 String authority = String.valueOf(cbxAuthority.getSelectedItem().toString());
                 String userId = txtUserId.getText().trim();
@@ -111,8 +102,8 @@ public class Login extends javax.swing.JFrame {
                 User user = UserService.getUserLogin(authority, userId, password);
                 if(user != null) {
                     ConstantHandler.user = user;
-                    welcomeMessage += user.getFirstName() + " " + user.getLastName();
-                    JOptionPane.showMessageDialog(null, welcomeMessage, welcomeTitle, JOptionPane.INFORMATION_MESSAGE);
+                    ConstantHandler.WELCOME_MESSAGE += user.getFirstName() + " " + user.getLastName();
+                    JOptionPane.showMessageDialog(null, ConstantHandler.WELCOME_MESSAGE, ConstantHandler.WELCOME_TITLE, JOptionPane.INFORMATION_MESSAGE);
                     dispose();
                     switch(user.getAuthority().toUpperCase()) {
 
@@ -124,13 +115,13 @@ public class Login extends javax.swing.JFrame {
                             new MMD_Account().setVisible(true);
                             break;
 
-                        case "ADMIN":
+                        case "WAREHOUSE ADMIN":
                             new Warehouse_Account().setVisible(true);
                             break;
 
                     }
                 } else {
-                    JOptionPane.showMessageDialog(null, invalidityMessage, invalidityTitle, JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, ConstantHandler.INVALIDITY_MESSAGE, ConstantHandler.INVALIDITY_TITLE, JOptionPane.ERROR_MESSAGE);
                 }
             });
         }
@@ -152,17 +143,9 @@ public class Login extends javax.swing.JFrame {
             }
         });
         JButton[] buttons = { button };
-//        JOptionPane optionPane = new JOptionPane(panel,
-////                                                 JOptionPane.YES_NO_OPTION,
-//                                                 1,
-//                                                 JOptionPane.PLAIN_MESSAGE,
-//                                                 null, buttons, button);
-//       JOptionPane optionPane = new JOptionPane(panel);
-        System.out.println(panel.getBounds().toString());
-                        System.out.println(panel.getSize().toString() + " panel");
 
         dialog.getContentPane().add(panel);
-        dialog.setSize(985, 300);
+        dialog.setSize(1000, 315);
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }
@@ -189,12 +172,6 @@ public class Login extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(51, 153, 255));
         setLocation(new java.awt.Point(393, 247));
-        setResizable(false);
-        addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentMoved(java.awt.event.ComponentEvent evt) {
-                formComponentMoved(evt);
-            }
-        });
 
         jPanel1.setBackground(new java.awt.Color(153, 204, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createMatteBorder(5, 5, 5, 5, new java.awt.Color(0, 0, 0)));
@@ -220,16 +197,19 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
-        jLabel4.setFont(new java.awt.Font("Vani", 1, 14)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel4.setText("Log-in As :");
 
-        cbxAuthority.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "REQUISITIONER", "MMD", "ADMIN" }));
+        cbxAuthority.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        cbxAuthority.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "REQUISITIONER", "MMD", "WAREHOUSE ADMIN" }));
 
-        jLabel1.setFont(new java.awt.Font("Vani", 1, 14)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel1.setText("User ID :");
 
-        jLabel2.setFont(new java.awt.Font("Vani", 1, 14)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel2.setText("Password :");
+
+        txtUserId.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
         lblCreateAccount.setFont(new java.awt.Font("Times New Roman", 3, 14)); // NOI18N
         lblCreateAccount.setText("Create Account");
@@ -238,6 +218,8 @@ public class Login extends javax.swing.JFrame {
                 lblCreateAccountMouseClicked(evt);
             }
         });
+
+        txtPassword.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -254,7 +236,7 @@ public class Login extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 5, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnLogin)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCancel)
@@ -301,7 +283,7 @@ public class Login extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(10, 10, 10)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addComponent(lblCreateAccount)
                 .addContainerGap())
         );
@@ -325,12 +307,10 @@ public class Login extends javax.swing.JFrame {
     private void lblCreateAccountMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCreateAccountMouseClicked
         // TODO add your handling code here:
         SwingUtilities.invokeLater(() -> {
-            CreateAccountPanel createAccountPanel = new CreateAccountPanel();
+            CreateAccountPanel createAccountPanel = new CreateAccountPanel(this);
             openDialog(this, createAccountPanel);
         });
-//        int selection = JOptionPane.showOptionDialog(null, createAccountPanel, "CHANGE PASSWORD", 
-//                            JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[]{}, null);
-        
+    
     }//GEN-LAST:event_lblCreateAccountMouseClicked
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
@@ -340,7 +320,7 @@ public class Login extends javax.swing.JFrame {
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         // TODO add your handling code here:
-        int confirmation = JOptionPane.showConfirmDialog(null, confirmExitMessage, confirmExitTitle, JOptionPane.OK_CANCEL_OPTION);
+        int confirmation = JOptionPane.showConfirmDialog(null, ConstantHandler.CONFIRM_EXIT_MESSAGE, ConstantHandler.CONFIRM_EXIT_TITLE, JOptionPane.OK_CANCEL_OPTION);
         if(confirmation == 0) {
             SwingUtilities.invokeLater(() -> {
                 setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -348,11 +328,6 @@ public class Login extends javax.swing.JFrame {
             });
         }
     }//GEN-LAST:event_btnCancelActionPerformed
-
-    private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
-        // TODO add your handling code here:
-        System.out.println(getBounds().toString());
-    }//GEN-LAST:event_formComponentMoved
     
     // </editor-fold> 
     /**

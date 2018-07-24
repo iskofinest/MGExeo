@@ -97,5 +97,10 @@ public class Material {
     public void addMaterialRequest(MaterialRequest materialRequest) {
         this.materialRequests.add(materialRequest);
     }
+
+    @Override
+    public String toString() {
+        return "Material{" + "id=" + id + ", code=" + code + ", description=" + description + ", unit=" + unit + '}';
+    }
     
 }

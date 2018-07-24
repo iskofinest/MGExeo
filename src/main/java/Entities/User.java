@@ -53,6 +53,13 @@ public class User implements Serializable {
     @Column(name="authority", length=20, nullable=false)
     private String authority;
     
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "department_id")
+    private Department department;
+    
+    @OneToMany(mappedBy = "requisitioner", cascade = CascadeType.ALL)
+    private Set<Transactions> transactions = new HashSet<>();
+    
     public User() {}
     
     public User(String employee_id, String username, String password, String firstName, String middleName, String lastName, String authority) {
@@ -65,8 +72,6 @@ public class User implements Serializable {
         this.authority = authority;
     }
     
-    
-
     public int getId() {
         return id;
     }
@@ -131,5 +136,28 @@ public class User implements Serializable {
         this.authority = authority;
     }
 
-    
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+    public Set<Transactions> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(Set<Transactions> transactions) {
+        this.transactions = transactions;
+    }
+
+    public void addTransaction(Transactions transactions) {
+        this.transactions.add(transactions);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" + "id=" + id + ", employee_id=" + employee_id + ", username=" + username + ", password=" + password + ", firstName=" + firstName + ", middleName=" + middleName + ", lastName=" + lastName + ", authority=" + authority + '}';
+    }
 }

@@ -25,6 +25,7 @@ public class Transactions {
     
     private int id;
     private String transactionCode;
+    private String transactionType;
     private Date transactionDate;
     private Date grantedDate;
     private BigDecimal grandTotal;
@@ -33,15 +34,15 @@ public class Transactions {
     
     private Set<MaterialRequest> materialRequests = new HashSet<>();
     private Set<BorrowTool> borrowTools = new HashSet<>();
-            
-//    @OneToMany(cascade = CascadeType.ALL, mappedBy="transaction")
-//    private Set<BorrowTool> borrowTools = new HashSet<>();
+    
+    private User requisitioner;
 
     public Transactions() {
     }
 
-    public Transactions(String transactionCode, Date transactionDate, Date grantedDate, BigDecimal grandTotal) {
+    public Transactions(String transactionCode, String transactionType, Date transactionDate, Date grantedDate, BigDecimal grandTotal) {
         this.transactionCode = transactionCode;
+        this.transactionType = transactionType;
         this.transactionDate = transactionDate;
         this.grantedDate = grantedDate;
         this.grandTotal = grandTotal;
@@ -65,6 +66,15 @@ public class Transactions {
 
     public void setTransactionCode(String transactionCode) {
         this.transactionCode = transactionCode;
+    }
+
+    @Column(name="transaction_type")
+    public String getTransactionType() {
+        return transactionType;
+    }
+
+    public void setTransactionType(String transactionType) {
+        this.transactionType = transactionType;
     }
 
     @Column(name="transaction_date")
@@ -131,5 +141,16 @@ public class Transactions {
     public void addBorrowTool(BorrowTool borrowTool) {
         this.borrowTools.add(borrowTool);
     }
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "requisitioner_id")
+    public User getRequisitioner() {
+        return requisitioner;
+    }
+
+    public void setRequisitioner(User requisitioner) {
+        this.requisitioner = requisitioner;
+    }
+    
     
 }

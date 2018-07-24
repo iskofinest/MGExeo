@@ -1,6 +1,7 @@
 
 package com.mycompany.mgexeo;
 
+import Entities.Department;
 import Entities.JoinedTables.BorrowTool;
 import Entities.JoinedTables.MaterialSupplier;
 import Entities.JoinedTables.ToolSupplier;
@@ -11,17 +12,21 @@ import Entities.Supplier;
 import Entities.Tool;
 import Entities.Transactions;
 import Entities.User;
+import Services.DepartmentService;
 import Services.MaterialService;
 import Services.MaterialSupplierService;
 import Services.ProjectService;
 import Services.RequestService;
 import Services.SupplierService;
 import Services.ToolService;
+import Services.ToolSupplierService;
 import Services.TransactionService;
 import Services.UserService;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 public class Tests {
     
@@ -108,7 +113,7 @@ public class Tests {
     }
     
     public static void testTransaction() {
-        transaction = new Transactions("transaction code", new Date(), new Date(), BigDecimal.valueOf(Double.parseDouble("369")));
+        transaction = new Transactions("transaction code", "IN", new Date(), new Date(), BigDecimal.valueOf(Double.parseDouble("369")));
         transaction.setProject(project);
         System.out.println("TRANSACTION SAVED: " + TransactionService.saveTransaction(transaction));
     }
@@ -145,6 +150,62 @@ public class Tests {
         borrowTool.setTransaction(transaction);
         System.out.println("BORROW TOOL SAVED: " + ToolService.saveBorrowTool(borrowTool));
         
+    }
+    
+    public static void testUserTransaction() {
+        Transactions transactions = TransactionService.findTransactionById(1);
+        User user = UserService.findUserById(1);
+        transactions.setRequisitioner(user);
+        if(TransactionService.updateTransaction(transactions)) System.out.println("Transaction - User updated");
+    }
+    
+    public static void testUserDepartment() {
+        String code = "001";
+        String name = "IT Department";
+        Department department = new Department(code, name);
+        User user = UserService.findUserById(1);
+        user.setDepartment(department);
+        if(UserService.updateUser(user)) System.out.println("Department - User updated");
+    }
+    
+    public static void testProjectDepartment() {
+        Project project = ProjectService.findProjectById(1);
+        Department department = DepartmentService.findDepartmentById(1);
+        project.setDepartment(department);
+        if(ProjectService.updateProject(project)) System.out.println("Project - Department updated");
+    }
+    
+    public static void testMaterialToolSupplier() {
+        List<Supplier> suppliers = SupplierService.findAll();
+        List<Material> materials = MaterialService.findAll();
+        List<Tool> tools = ToolService.findAll();
+        
+        Random random = new Random(500);
+        
+        suppliers.forEach(supplier -> {
+//            materials.forEach(material -> {
+//                MaterialSupplier materialSupplier = new MaterialSupplier();
+//                materialSupplier.setMaterial(material);
+//                materialSupplier.setSupplier(supplier);
+//                materialSupplier.setCurrency("PHP");
+//                materialSupplier.setPrice(BigDecimal.valueOf(Double.parseDouble(String.valueOf(random.nextInt(10001)))));
+//                if(MaterialSupplierService.saveMaterialSupplier(materialSupplier)) 
+//                    System.out.println("MATERIAL SUCCESSFULLY SAVED :D");
+//                else System.err.println("MATERIAL SUCCESSFULLY SAVED :D");
+//            });
+
+            tools.forEach(tool -> {
+                ToolSupplier toolSupplier = new ToolSupplier();
+                toolSupplier.setTool(tool);
+                toolSupplier.setSupplier(supplier);
+                toolSupplier.setCurrency("PHP");
+                toolSupplier.setPrice(BigDecimal.valueOf(Double.parseDouble(String.valueOf(random.nextInt(10001)))));
+                if(ToolSupplierService.saveToolSupplier(toolSupplier))
+                    System.out.println("TOOL SUPPLIER SUCCESSFULLY SAVED");
+                else System.err.println("TOOL SUPPLIER NOT SUCCESSFULLY SAVED");
+            });
+        });
+        System.out.println("DONE DONE DONE . . . . .");
     }
     
 }
