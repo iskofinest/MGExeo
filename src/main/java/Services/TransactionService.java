@@ -1,14 +1,14 @@
 
 package Services;
 
-import Entities.Transactions;
+import Entities.TransactionOut;
 import javax.swing.JOptionPane;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 public class TransactionService {
     
-    public static boolean saveTransaction(Transactions transaction) {
+    public static boolean saveTransaction(TransactionOut transaction) {
         try{
             Session session = Utilities.HibernateUtil.getSessionFactory().openSession();
             Transaction tx = session.beginTransaction();
@@ -23,15 +23,15 @@ public class TransactionService {
         return true;
     }
     
-    public static Transactions findTransactionById(int transactionId) {
-        Transactions transaction;
+    public static TransactionOut findTransactionById(int transactionId) {
+        TransactionOut transaction;
         Session session = Utilities.HibernateUtil.getSessionFactory().openSession();
-        transaction = (Transactions) session.get(Transactions.class, transactionId);
+        transaction = (TransactionOut) session.get(TransactionOut.class, transactionId);
         session.close();
         return transaction;
     }
 
-    public static boolean updateTransaction(Transactions transactions) {
+    public static boolean updateTransaction(TransactionOut transactions) {
         boolean saved = false;
         try{
             Session session = Utilities.HibernateUtil.getSessionFactory().openSession();

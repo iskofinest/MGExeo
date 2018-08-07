@@ -2,7 +2,7 @@
 package Entities.JoinedTables;
 
 import Entities.Tool;
-import Entities.Transactions;
+import Entities.TransactionOut;
 import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.CascadeType;
@@ -28,7 +28,6 @@ public class BorrowTool {
     private Date borrowDate;
     private Date returnDate;
     
-    private Transactions transaction;
 
     public BorrowTool() {
     }
@@ -90,14 +89,4 @@ public class BorrowTool {
         this.returnDate = returnDate;
     }
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "transaction_id")
-    public Transactions getTransaction() {
-        return transaction;
-    }
-
-    public void setTransaction(Transactions transaction) {
-        this.transaction = transaction;
-    }
-    
 }

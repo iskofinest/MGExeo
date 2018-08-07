@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package Services;
 
 import Entities.JoinedTables.ToolSupplier;
@@ -35,12 +31,25 @@ public class ToolSupplierService {
     }
 
     public static List<ToolSupplier> findBySupplierCode(String supplierCode) {
-        String hql = "Select ts from ToolSupplier ts left join  ts.toolSupplierId.tool t left join ts.toolSupplierId.supplier s where s.code=" + supplierCode;
+        String hql = "Select ts from ToolSupplier ts left join  ts.toolSupplierId.tool t left join ts.toolSupplierId.supplier s where s.code='" + supplierCode + "'";
         Session session = Utilities.HibernateUtil.getSessionFactory().openSession();
         Query query = session.createQuery(hql);
         List<ToolSupplier> toolSuppliers = query.list();
         session.close();
         return toolSuppliers;
+    }
+
+    public static ToolSupplier findbySupplierIdAndItemCode(int supplierId, String itemCode) {
+        String hql = "SELECT ts FROM Tool t "
+                + "LEFT JOIN t.toolSuppliers ts LEFT JOIN ts.toolSupplierId.supplier s "
+                + "WHERE s.id=:supplier_id and t.code=:toolCode";
+        Session session = Utilities.HibernateUtil.getSessionFactory().openSession();
+        Query query = session.createQuery(hql);
+        query.setInteger("supplier_id", supplierId);
+        query.setString("toolCode", itemCode);
+        List<ToolSupplier> toolSupplier = query.list();
+        ToolSupplier ts = (ToolSupplier) toolSupplier.get(0);
+        return ts;
     }
     
     

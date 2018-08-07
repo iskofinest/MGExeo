@@ -60,7 +60,8 @@ Contributor(s):
     
     <!--Mention here all the model classes along with their package name-->  
     <mapping class="Entities.Project"/>
-    <mapping class="Entities.Transactions"/>
+    <mapping class="Entities.TransactionIn"/>
+    <mapping class="Entities.TransactionOut"/>
     <mapping class="Entities.MaterialRequest"/>
     <mapping class="Entities.User"/>
     <mapping class="Entities.Department"/>
@@ -70,7 +71,9 @@ Contributor(s):
     <mapping class="Entities.JoinedTables.MaterialSupplier"/>
     <mapping class="Entities.JoinedTables.ToolSupplier"/>
     <mapping class="Entities.JoinedTables.BorrowTool"/>
-    <!--<mapping class="Entities.JoinedTables.MaterialSupplierId"/>-->
+    <mapping class="Entities.JoinedTables.MaterialDelivery"/>
+    <mapping class="Entities.JoinedTables.ToolDelivery"/>
+    <mapping class="Entities.JoinedTables.MaterialSupplierId"/>
     
 <!--    <mapping class="Entities.Project"/>
     <mapping class="Entities.Request"/>

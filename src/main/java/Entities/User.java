@@ -57,8 +57,8 @@ public class User implements Serializable {
     @JoinColumn(name = "department_id")
     private Department department;
     
-    @OneToMany(mappedBy = "requisitioner", cascade = CascadeType.ALL)
-    private Set<Transactions> transactions = new HashSet<>();
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL)
+    private Set<TransactionIn> transactionIns = new HashSet<>();
     
     public User() {}
     
@@ -143,17 +143,17 @@ public class User implements Serializable {
     public void setDepartment(Department department) {
         this.department = department;
     }
-
-    public Set<Transactions> getTransactions() {
-        return transactions;
+    
+    public Set<TransactionIn> getTransactionIns() {
+        return transactionIns;
     }
-
-    public void setTransactions(Set<Transactions> transactions) {
-        this.transactions = transactions;
+    
+    public void setTransactionIns(Set<TransactionIn> transactionIns) {
+        this.transactionIns = transactionIns;
     }
-
-    public void addTransaction(Transactions transactions) {
-        this.transactions.add(transactions);
+    
+    public void addTransactionIns(TransactionIn transactionIn) {
+        this.transactionIns.add(transactionIn);
     }
 
     @Override

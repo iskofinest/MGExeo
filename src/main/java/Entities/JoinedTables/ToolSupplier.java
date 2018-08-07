@@ -5,12 +5,15 @@ import Entities.Supplier;
 import Entities.Tool;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.AssociationOverride;
 import javax.persistence.AssociationOverrides;
+import javax.persistence.CascadeType;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -21,12 +24,14 @@ import javax.persistence.Transient;
         joinColumns = @JoinColumn(name = "tool_id")),
     @AssociationOverride(name = "toolSupplierId.supplier",
         joinColumns = @JoinColumn(name = "supplier_id")) })
-public class ToolSupplier  {
+public class ToolSupplier implements Serializable  {
     
     private ToolSupplierId toolSupplierId = new ToolSupplierId();
     
     private String currency;
     private BigDecimal price;
+    
+    private Set<ToolDelivery> toolDeliveries = new HashSet<>();
 
     @EmbeddedId
     public ToolSupplierId getToolSupplierId() {
@@ -70,7 +75,19 @@ public class ToolSupplier  {
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
+
+    @OneToMany(mappedBy = "toolDeliveryId.toolSupplier",
+            cascade = CascadeType.ALL)
+    public Set<ToolDelivery> getToolDeliveries() {
+        return toolDeliveries;
+    }
+
+    public void setToolDeliveries(Set<ToolDelivery> toolDeliveries) {
+        this.toolDeliveries = toolDeliveries;
+    }
     
-    
+    public void addToolDeliveries(ToolDelivery toolDelivery) {
+        this.toolDeliveries.add(toolDelivery);
+    }
     
 }

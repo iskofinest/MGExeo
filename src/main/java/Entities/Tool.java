@@ -1,7 +1,6 @@
 
 package Entities;
 
-import Entities.Item.Item;
 import Entities.JoinedTables.BorrowTool;
 import Entities.JoinedTables.ToolSupplier;
 import java.io.Serializable;
@@ -17,7 +16,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tools")
-public class Tool extends Item implements Serializable {
+public class Tool implements Serializable {
     
     private int id;
     

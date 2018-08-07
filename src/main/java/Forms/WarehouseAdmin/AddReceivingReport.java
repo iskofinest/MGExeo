@@ -1,8 +1,11 @@
 
 package Forms.WarehouseAdmin;
 
+// <editor-fold defaultstate="collapsed" desc="Imports">       
 import Entities.Department;
+import Entities.JoinedTables.MaterialDelivery;
 import Entities.JoinedTables.MaterialSupplier;
+import Entities.JoinedTables.ToolDelivery;
 import Entities.JoinedTables.ToolSupplier;
 import Entities.Material;
 import Entities.Project;
@@ -10,138 +13,51 @@ import java.util.List;
 import java.util.Date;
 import Entities.Supplier;
 import Entities.Tool;
+import Entities.TransactionIn;
 import Services.DepartmentService;
+import Services.MaterialDeliveryService;
 import Services.MaterialSupplierService;
 import Services.ProjectService;
 import Services.SupplierService;
+import Services.ToolDeliveryService;
 import Services.ToolSupplierService;
+import Services.TransactionInService;
 import java.math.BigDecimal;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
+    //</editor-fold>
 
 public class AddReceivingReport extends javax.swing.JFrame {
     
+    // <editor-fold defaultstate="collapsed" desc="Variables">    
     private List<Supplier> suppliers; 
     private List<Department> departments; 
     private List<MaterialSupplier> materialSuppliers = null;
     private List<ToolSupplier> toolSuppliers = null;
     private boolean supplierNameChoosing = false;
     private boolean supplierCodeChoosing = false;
-    Vector<Vector> data = new Vector<>();
-    Vector<String> columns = new Vector<>();
-    String[] titles = new String[] {"Category", "Item Code", "Description", "Qty", "Unit", "Unit Cost", "Total Cost"};
+    private Vector<Vector> data = new Vector<>();
+    private Vector<String> columns = new Vector<>();
+    private String[] titles = new String[] {"Category", "Item Code", "Description", "Qty", "Unit", "Unit Cost", "Total Cost"};
+    private int tableIndex = 0;
+    private BigDecimal transactionTotalAmount = new BigDecimal(0);
+     //</editor-fold>
+
 
     public AddReceivingReport() {
         initComponents();
-        
-        
         for(String column: titles) {
             columns.addElement(column);
         }
-//        for(int i=0; i<10; i++) {
-//            Vector<String> row = new Vector<String>();
-//            for(int j=0; j<7; j++) { 
-//                row.addElement("Row " + (i+1) + " - column " + (j+1));
-//            }
-//            data.add(row);
-//        }
-//        DefaultTableModel model = new DefaultTableModel(data, columns);
-//        tblDeliveryItems.setModel(model);
 
         initializeData();
     }
     
-    //<editor-fold defaultstate="collapsed" desc=" Custom Code ">
-    
-    //METHOD TO BE CALL FOR INITIALIZING DATA IN CONSTRUCTOR
-    private void initializeData() {
-        suppliers = SupplierService.findAll();
-        AutoCompleteDecorator.decorate(cbxSupplierId);
-        AutoCompleteDecorator.decorate(cbxSupplierName);
-        AutoCompleteDecorator.decorate(cbxProjectName);
-        AutoCompleteDecorator.decorate(cbxDepartmentName);
-        AutoCompleteDecorator.decorate(cbxItemCode);
-        AutoCompleteDecorator.decorate(cbxDescription);
-        
-        //Supplier ID and Supplier Name Combo Box
-        DefaultComboBoxModel supplierIdModel = new DefaultComboBoxModel();
-        DefaultComboBoxModel supplierNameModel = new DefaultComboBoxModel();
-        suppliers.forEach(supplier -> {
-            supplierIdModel.addElement(supplier.getCode());
-            supplierNameModel.addElement(supplier.getName());
-        });
-        
-        //Department Name and Project Name Combo Box
-        departments = DepartmentService.findAllDepartmentWithProjects();
-        DefaultComboBoxModel departmentNameModel = new DefaultComboBoxModel();
-        DefaultComboBoxModel projectNameModel = new DefaultComboBoxModel();
-        departments.forEach(department -> {
-            departmentNameModel.addElement(department.getName());
-            List<Project> departmentProjects = ProjectService.getProjectsByDepartmentId(department.getId());
-            departmentProjects.forEach(project -> projectNameModel.addElement(project.getProjectName()));
-        });
-        SwingUtilities.invokeLater(() -> {
-            cbxSupplierId.setModel(supplierIdModel);
-            cbxSupplierName.setModel(supplierNameModel);
-            cbxDepartmentName.setModel(departmentNameModel);
-            cbxProjectName.setModel(projectNameModel);
-            jdcDate.setDate(new Date());
-            setItemDropDown();
-        });
-//        System.out.println("UNIT: " + materialSuppliers.get(0).getMaterial().getUnit());
-//        System.out.println("PRICE: " + String.valueOf(materialSuppliers.get(0).getPrice()));
-        SwingUtilities.invokeLater(() -> {
-            setUnitAndPrice(materialSuppliers.get(0).getMaterial().getUnit(), String.valueOf(materialSuppliers.get(0).getPrice()));
-        });
-    }
-    
-    // METHOD FOR INITIALIZING DATA ON DROPDOWN FROM ITEM FIELDS
-    private void setItemDropDown() {
-        String supplierCode = cbxSupplierId.getSelectedItem().toString();
-        if(cbxCategory.getSelectedItem().toString().equals("Material")) {
-            lblCode.setText("Material Codes");
-            toolSuppliers = null;
-            DefaultComboBoxModel materialsCodeModel = new DefaultComboBoxModel();
-            DefaultComboBoxModel materialDescriptionModel = new DefaultComboBoxModel();
-            materialSuppliers = MaterialSupplierService.findBySupplierCode(supplierCode);
-            materialSuppliers.forEach(materialSupplier ->{ 
-                materialsCodeModel.addElement(materialSupplier.getMaterial().getCode());
-                materialDescriptionModel.addElement(materialSupplier.getMaterial().getDescription());
-            });
-            cbxItemCode.setModel(materialsCodeModel);
-            cbxDescription.setModel(materialDescriptionModel);
-        } else {
-            lblCode.setText("Tool Codes");
-            materialSuppliers = null;
-            DefaultComboBoxModel toolCodeModel = new DefaultComboBoxModel();
-            DefaultComboBoxModel toolDescriptionModel = new DefaultComboBoxModel();
-            toolSuppliers = ToolSupplierService.findBySupplierCode(supplierCode);
-            toolSuppliers.forEach(toolSupplier ->{ 
-                toolCodeModel.addElement(toolSupplier.getTool().getCode());
-                toolDescriptionModel.addElement(toolSupplier.getTool().getDescription());
-            });
-            cbxItemCode.setModel(toolCodeModel);
-            cbxDescription.setModel(toolDescriptionModel);
-        }
-        System.out.println("private void setItemDropDown() {");
-    }
-    
-    // METHOD FOR INITIALIZING DATA ON OTHER FIELDS FROM ITEM FIELDS
-    private void setUnitAndPrice(String unit, String price) {
-        System.out.println("setUnitAndPrice(String unit, String price) {");
-        txtUnit.setText(unit);
-        txtUnitCost.setText(price);
-        System.out.println("setUnitAndPrice(String unit, String price) {");
-    }
-    
-    //</editor-fold>
-    
-    
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -199,19 +115,23 @@ public class AddReceivingReport extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblDeliveryItems = new javax.swing.JTable();
+        jLabel15 = new javax.swing.JLabel();
+        txtTotalAmount = new javax.swing.JTextField();
+        txtNetAmount = new javax.swing.JTextField();
+        jLabel21 = new javax.swing.JLabel();
+        txtVat = new javax.swing.JTextField();
+        jLabel22 = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnSaveData = new javax.swing.JButton();
+        btnBack = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("ADD RECEIVING REPORT");
         setBackground(new java.awt.Color(102, 153, 255));
         setBounds(new java.awt.Rectangle(0, 0, 1938, 1048));
         setExtendedState(6);
-        setMaximumSize(new java.awt.Dimension(1938, 1048));
         setMinimumSize(new java.awt.Dimension(1938, 1048));
-        setPreferredSize(new java.awt.Dimension(1938, 1048));
         setSize(new java.awt.Dimension(1938, 1048));
 
         mainPanel.setBackground(new java.awt.Color(102, 153, 255));
@@ -521,6 +441,7 @@ public class AddReceivingReport extends javax.swing.JFrame {
         txtTotalCost.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
 
         btnAddItemToTable.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        btnAddItemToTable.setEnabled(false);
         btnAddItemToTable.setLabel("Add to Table");
         btnAddItemToTable.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -613,10 +534,7 @@ public class AddReceivingReport extends javax.swing.JFrame {
         tblDeliveryItems.setBackground(new java.awt.Color(240, 240, 240));
         tblDeliveryItems.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+
             },
             new String [] {
                 "Category", "Item Code", "Description", "Quantity", "Unit", "Unit Cost", "Total Cost"
@@ -637,17 +555,64 @@ public class AddReceivingReport extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        tblDeliveryItems.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblDeliveryItemsMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblDeliveryItems);
+
+        jLabel15.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel15.setText("Total Amount:  ");
+
+        txtTotalAmount.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+
+        txtNetAmount.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+
+        jLabel21.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel21.setText("Net Amount:  ");
+
+        txtVat.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+
+        jLabel22.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel22.setText("VAT:  ");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1292, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel22)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtVat, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel21)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtNetAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel15)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtTotalAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 636, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 591, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel22)
+                        .addComponent(txtVat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel21)
+                        .addComponent(txtNetAmount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel15)
+                        .addComponent(txtTotalAmount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
@@ -694,15 +659,20 @@ public class AddReceivingReport extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jButton1.setText("jButton1");
-        jButton1.setMaximumSize(new java.awt.Dimension(199, 25));
-        jButton1.setMinimumSize(new java.awt.Dimension(199, 25));
-        jButton1.setPreferredSize(new java.awt.Dimension(199, 25));
+        btnSaveData.setText("SAVE DATA");
+        btnSaveData.setMaximumSize(new java.awt.Dimension(199, 25));
+        btnSaveData.setMinimumSize(new java.awt.Dimension(199, 25));
+        btnSaveData.setPreferredSize(new java.awt.Dimension(199, 25));
+        btnSaveData.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveDataActionPerformed(evt);
+            }
+        });
 
-        jButton3.setText("jButton1");
-        jButton3.setMaximumSize(new java.awt.Dimension(199, 25));
-        jButton3.setMinimumSize(new java.awt.Dimension(199, 25));
-        jButton3.setPreferredSize(new java.awt.Dimension(199, 25));
+        btnBack.setText("BACK");
+        btnBack.setMaximumSize(new java.awt.Dimension(199, 25));
+        btnBack.setMinimumSize(new java.awt.Dimension(199, 25));
+        btnBack.setPreferredSize(new java.awt.Dimension(199, 25));
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
@@ -717,9 +687,9 @@ public class AddReceivingReport extends javax.swing.JFrame {
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 411, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnSaveData, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
@@ -750,8 +720,8 @@ public class AddReceivingReport extends javax.swing.JFrame {
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(btnSaveData, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnBack, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -798,6 +768,7 @@ public class AddReceivingReport extends javax.swing.JFrame {
     private void cbxSupplierNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxSupplierNameActionPerformed
         cbxSupplierId.setSelectedIndex(cbxSupplierName.getSelectedIndex());
         setItemDropDown();
+        txtUnitCost.setText("");
         System.out.println("cbxSupplierNameActionPerformed");
     }//GEN-LAST:event_cbxSupplierNameActionPerformed
 
@@ -841,24 +812,47 @@ public class AddReceivingReport extends javax.swing.JFrame {
     }//GEN-LAST:event_cbxDescriptionActionPerformed
 
     private void cbxCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxCategoryActionPerformed
-        // TODO add your handling code here:
         setItemDropDown();
     }//GEN-LAST:event_cbxCategoryActionPerformed
 
     private void btnAddItemToTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddItemToTableActionPerformed
+        
         SwingUtilities.invokeLater(() -> {
             if(!txtQuantity.getText().isEmpty() && !txtTotalCost.getText().isEmpty()) {
-                Vector<String> row = new Vector<>();
-                row.add(cbxCategory.getSelectedItem().toString()); // category
-                row.add(cbxItemCode.getSelectedItem().toString()); // item code
-                row.add(cbxDescription.getSelectedItem().toString()); // item description
-                row.add(txtQuantity.getText()); // item quantity
-                row.add(txtUnit.getText()); // item unit
-                row.add(txtUnitCost.getText()); // item unit cost
-                row.add(txtTotalCost.getText()); // item total cost
-                data.add(row);
+                if(inTable()) { // check if the data to be inserted is already on the table
+                    int confirmation = JOptionPane.showConfirmDialog(null, "Item Code is already on the table, would you like to add add instead?", "Duplicate entry", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    if(confirmation == 0) {
+                        int quantity = Integer.parseInt(txtQuantity.getText()); // quantity to be inserted
+                        BigDecimal amount = BigDecimal.valueOf(Double.parseDouble(txtTotalCost.getText())); // total amount to be inserted
+                        int dataQuantity = Integer.parseInt(data.get(tableIndex).get(3).toString());    //quantity from the table
+                        BigDecimal dataAmount = BigDecimal.valueOf(Double.parseDouble(data.get(tableIndex).get(6).toString())); // total amount from the table
+                        int totalQuantity = quantity + dataQuantity;
+                        BigDecimal totalAmount = amount.add(dataAmount);
+                        data.get(tableIndex).setElementAt(totalQuantity, 3);
+                        data.get(tableIndex).setElementAt(totalAmount, 6);
+                    }
+                } else {
+                    Vector<String> row = new Vector<>();
+                    row.add(cbxCategory.getSelectedItem().toString()); // category
+                    row.add(cbxItemCode.getSelectedItem().toString()); // item code
+                    row.add(cbxDescription.getSelectedItem().toString()); // item description
+                    row.add(txtQuantity.getText()); // item quantity
+                    row.add(txtUnit.getText()); // item unit
+                    row.add(txtUnitCost.getText()); // item unit cost
+                    row.add(txtTotalCost.getText()); // item total cost
+                    data.add(row);
+                }
                 DefaultTableModel tableModel = new DefaultTableModel(data, columns);
                 tblDeliveryItems.setModel(tableModel);
+                transactionTotalAmount = new BigDecimal(0);
+                data.forEach(row -> {
+                    BigDecimal rowCost = BigDecimal.valueOf(Double.parseDouble(row.get(6).toString()));
+                    System.out.println("ROW COST: " + rowCost);
+                    transactionTotalAmount = transactionTotalAmount.add(rowCost);
+                    System.out.println("TRANSACTION TOTAL AMOUNT in for each: " + transactionTotalAmount);
+                });
+                System.out.println("TRANSACTION TOTAL AMOUNT: " + transactionTotalAmount);
+                txtTotalAmount.setText(transactionTotalAmount.toPlainString());
             } else {
                 JOptionPane.showMessageDialog(null, "Please complete the details", "INCOMPLETE DETAILS", 0);
             }
@@ -877,6 +871,7 @@ public class AddReceivingReport extends javax.swing.JFrame {
 
     private void txtQuantityCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txtQuantityCaretUpdate
         SwingUtilities.invokeLater(() -> {
+            btnAddItemToTable.setEnabled(!txtQuantity.getText().isEmpty());
             if(txtQuantity.getText().isEmpty()) {
                 txtTotalCost.setText("0.00");
             } else {
@@ -893,6 +888,63 @@ public class AddReceivingReport extends javax.swing.JFrame {
             evt.consume();
         } 
     }//GEN-LAST:event_txtQuantityKeyTyped
+
+    private void tblDeliveryItemsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDeliveryItemsMouseClicked
+        SwingUtilities.invokeLater(() -> {
+            if(evt.getClickCount()>1) {
+                JTable source = (JTable)evt.getSource();
+                int row = source.rowAtPoint( evt.getPoint());
+                int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this row?", "DELETE CREATED ROW?", JOptionPane.OK_CANCEL_OPTION, 3);
+                if(confirmation == 0) {
+                    BigDecimal amount = BigDecimal.valueOf(Double.parseDouble(data.get(row).get(6).toString()));
+                    BigDecimal totalAmount = BigDecimal.valueOf(Double.parseDouble(txtTotalAmount.getText()));
+                    totalAmount = totalAmount.subtract(amount);
+                    txtTotalAmount.setText(totalAmount.toString());
+                    data.remove(row);
+                    DefaultTableModel tableModel = new DefaultTableModel(data, columns);
+                    tblDeliveryItems.setModel(tableModel);
+                }
+            }
+        });
+    }//GEN-LAST:event_tblDeliveryItemsMouseClicked
+
+    private void btnSaveDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveDataActionPerformed
+        int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure you want to save this Transaction?", "CONFIRM SAVE", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if(confirmation == 0) {
+            int supplierId = suppliers.get(cbxSupplierId.getSelectedIndex()).getId();
+            TransactionIn transactionIn = new TransactionIn();
+            transactionIn.setSupplier(suppliers.get(cbxSupplierId.getSelectedIndex()));
+            if(TransactionInService.saveTransactionIn(transactionIn)) {
+                System.out.println("TRANSACTION IN SAVED");
+            }
+            for(Vector row : data) {
+                String itemCode = row.get(1).toString();
+                if(row.get(0).toString().equals("Material")) { // If Material
+                    MaterialSupplier materialSupplier = MaterialSupplierService.findBySupplierIdAndItemCode(supplierId, itemCode);
+                    MaterialDelivery materialDelivery = new MaterialDelivery();
+                    materialDelivery.setUnitCost(BigDecimal.valueOf(Double.parseDouble(row.get(5).toString())));
+                    materialDelivery.setQuantity(Integer.parseInt(row.get(3).toString()));
+                    materialDelivery.setMaterialSupplier(materialSupplier);
+//                    transactionIn.addMaterialDeliveries(materialDelivery);
+                    materialDelivery.setTransactionIn(transactionIn);
+                    if(MaterialDeliveryService.saveMaterialDelivery(materialDelivery)) {
+                        System.out.println("MATERIAL DELIVERY SAVED");
+                    }
+                } else { // If Tool
+                    ToolSupplier toolSupplier = ToolSupplierService.findbySupplierIdAndItemCode(supplierId, itemCode);
+                    ToolDelivery toolDelivery = new ToolDelivery();
+                    toolDelivery.setUnitCost(BigDecimal.valueOf(Double.parseDouble(row.get(5).toString())));
+                    toolDelivery.setQuantity(Integer.parseInt(row.get(3).toString()));
+                    toolDelivery.setToolSupplier(toolSupplier);
+                    toolDelivery.setTransactionIn(transactionIn);
+                    if(ToolDeliveryService.saveToolDelivery(toolDelivery)) {
+                        System.out.println("TOOL DELIVERY SAVED");
+                    }
+                }
+            }
+            JOptionPane.showMessageDialog(null, "TRANSACTION IN SUCCESSFULLYY SAVED!!");
+        }
+    }//GEN-LAST:event_btnSaveDataActionPerformed
 
     //</editor-fold>
     /**
@@ -930,10 +982,114 @@ public class AddReceivingReport extends javax.swing.JFrame {
         });
     }
     
+    //<editor-fold defaultstate="collapsed" desc=" Custom Code ">
+    
+    //METHOD TO BE CALL FOR INITIALIZING DATA IN CONSTRUCTOR
+    private void initializeData() {
+        suppliers = SupplierService.findAll();
+        AutoCompleteDecorator.decorate(cbxSupplierId);
+        AutoCompleteDecorator.decorate(cbxSupplierName);
+        AutoCompleteDecorator.decorate(cbxProjectName);
+        AutoCompleteDecorator.decorate(cbxDepartmentName);
+        AutoCompleteDecorator.decorate(cbxItemCode);
+        AutoCompleteDecorator.decorate(cbxDescription);
+        
+        //Supplier ID and Supplier Name Combo Box
+        DefaultComboBoxModel supplierIdModel = new DefaultComboBoxModel();
+        DefaultComboBoxModel supplierNameModel = new DefaultComboBoxModel();
+        suppliers.forEach(supplier -> {
+            supplierIdModel.addElement(supplier.getCode());
+            supplierNameModel.addElement(supplier.getName());
+        });
+        
+        //Department Name and Project Name Combo Box
+        departments = DepartmentService.findAllDepartmentWithProjects();
+        DefaultComboBoxModel departmentNameModel = new DefaultComboBoxModel();
+        DefaultComboBoxModel projectNameModel = new DefaultComboBoxModel();
+        departments.forEach(department -> {
+            departmentNameModel.addElement(department.getName());
+            List<Project> departmentProjects = ProjectService.getProjectsByDepartmentId(department.getId());
+            departmentProjects.forEach(project -> projectNameModel.addElement(project.getProjectName()));
+        });
+        SwingUtilities.invokeLater(() -> {
+            cbxSupplierId.setModel(supplierIdModel);
+            cbxSupplierName.setModel(supplierNameModel);
+            cbxDepartmentName.setModel(departmentNameModel);
+            cbxProjectName.setModel(projectNameModel);
+            jdcDate.setDate(new Date());
+            setItemDropDown();
+        });
+//        System.out.println("UNIT: " + materialSuppliers.get(0).getMaterial().getUnit());
+//        System.out.println("PRICE: " + String.valueOf(materialSuppliers.get(0).getPrice()));
+        SwingUtilities.invokeLater(() -> {
+            setUnitAndPrice(materialSuppliers.get(0).getMaterial().getUnit(), String.valueOf(materialSuppliers.get(0).getPrice()));
+        });
+        tblDeliveryItems.setDefaultEditor(Object.class, null);
+    }
+    
+    // METHOD FOR INITIALIZING DATA ON DROPDOWN FROM ITEM FIELDS
+    private void setItemDropDown() {
+        String supplierCode = cbxSupplierId.getSelectedItem().toString();
+        if(cbxCategory.getSelectedItem().toString().equals("Material")) {
+            lblCode.setText("Material Codes");
+            toolSuppliers = null;
+            DefaultComboBoxModel materialsCodeModel = new DefaultComboBoxModel();
+            DefaultComboBoxModel materialDescriptionModel = new DefaultComboBoxModel();
+            materialSuppliers = MaterialSupplierService.findBySupplierCode(supplierCode);
+            materialSuppliers.forEach(materialSupplier ->{ 
+                materialsCodeModel.addElement(materialSupplier.getMaterial().getCode());
+                materialDescriptionModel.addElement(materialSupplier.getMaterial().getDescription());
+            });
+            cbxItemCode.setModel(materialsCodeModel);
+            cbxDescription.setModel(materialDescriptionModel);
+        } else {
+            lblCode.setText("Tool Codes");
+            materialSuppliers = null;
+            DefaultComboBoxModel toolCodeModel = new DefaultComboBoxModel();
+            DefaultComboBoxModel toolDescriptionModel = new DefaultComboBoxModel();
+            toolSuppliers = ToolSupplierService.findBySupplierCode(supplierCode);
+            toolSuppliers.forEach(toolSupplier ->{ 
+                toolCodeModel.addElement(toolSupplier.getTool().getCode());
+                toolDescriptionModel.addElement(toolSupplier.getTool().getDescription());
+            });
+            cbxItemCode.setModel(toolCodeModel);
+            cbxDescription.setModel(toolDescriptionModel);
+        }
+        txtQuantity.setText("");
+        txtTotalCost.setText("");
+    }
+    
+    // METHOD FOR INITIALIZING DATA ON OTHER FIELDS FROM ITEM FIELDS
+    private void setUnitAndPrice(String unit, String price) {
+        txtUnit.setText(unit);
+        txtUnitCost.setText(price);
+        txtQuantity.setText("");
+        txtTotalCost.setText("");
+    }
+    
+    // check if the item to be inserted is not yet in table
+    private boolean inTable() {
+        String itemCode = cbxItemCode.getSelectedItem().toString();
+        String category = cbxCategory.getSelectedItem().toString();
+        
+        for(int i=0; i<data.size(); i++) {
+            if(data.get(i).get(1).toString().equals(itemCode) && data.get(i).get(0).toString().equals(category)) {
+                tableIndex = i;
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    //</editor-fold>
+    
+    
     //<editor-fold defaultstate="collapsed" desc=" Variable Declarations ">
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddItemToDatabase;
     private javax.swing.JButton btnAddItemToTable;
+    private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnSaveData;
     private javax.swing.JComboBox<String> cbxCategory;
     private javax.swing.JComboBox<String> cbxDepartmentName;
     private javax.swing.JComboBox<String> cbxDescription;
@@ -941,20 +1097,21 @@ public class AddReceivingReport extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cbxProjectName;
     private javax.swing.JComboBox<String> cbxSupplierId;
     private javax.swing.JComboBox<String> cbxSupplierName;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -976,13 +1133,16 @@ public class AddReceivingReport extends javax.swing.JFrame {
     private javax.swing.JTextField txtApprovedBy;
     private javax.swing.JTextField txtCheckedBy;
     private javax.swing.JTextField txtDeliveryReceiptNo;
+    private javax.swing.JTextField txtNetAmount;
     private javax.swing.JTextField txtPurchaseOrderNo;
     private javax.swing.JTextField txtQuantity;
     private javax.swing.JTextField txtReceivedBy;
+    private javax.swing.JTextField txtTotalAmount;
     private javax.swing.JTextField txtTotalCost;
     private javax.swing.JTextField txtTransactionCode;
     private javax.swing.JTextField txtUnit;
     private javax.swing.JTextField txtUnitCost;
+    private javax.swing.JTextField txtVat;
     private javax.swing.JTextField txtVerifiedBy;
     // End of variables declaration//GEN-END:variables
     //</editor-fold>

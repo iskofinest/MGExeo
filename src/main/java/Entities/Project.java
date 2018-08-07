@@ -33,7 +33,7 @@ public class Project implements Serializable {
     private BigDecimal totalBudget;
     
     private Department department;
-    private Set<Transactions> transactions = new HashSet<>();
+    private Set<TransactionIn> transactionIn = new HashSet<>();
     
     public Project(){}
 
@@ -135,16 +135,16 @@ public class Project implements Serializable {
     }
     
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    public Set<Transactions> getTransactions() {
-        return transactions;
+    public Set<TransactionIn> getTransactionIn() {
+        return transactionIn;
     }
 
-    public void setTransactions(Set<Transactions> transactions) {
-        this.transactions = transactions;
+    public void setTransactionIn(Set<TransactionIn> transactionIn) {
+        this.transactionIn = transactionIn;
     }
     
-    public void addTransaction(Transactions transaction) {
-        this.transactions.add(transaction);
+    public void addTransactionIn(TransactionIn transactionIn) {
+        this.transactionIn.add(transactionIn);
     }
     
 }

@@ -3,12 +3,17 @@ package Entities.JoinedTables;
 
 import Entities.Material;
 import Entities.Supplier;
+import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.AssociationOverride;
 import javax.persistence.AssociationOverrides;
+import javax.persistence.CascadeType;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -19,12 +24,14 @@ import javax.persistence.Transient;
         joinColumns = @JoinColumn(name = "material_id")),
     @AssociationOverride(name = "materialSupplierId.supplier",
         joinColumns = @JoinColumn(name = "supplier_id")) })
-public class MaterialSupplier {
+public class MaterialSupplier implements Serializable {
     
     MaterialSupplierId materialSupplierId = new MaterialSupplierId();
     
     private String currency;
     private BigDecimal price;
+    
+    private Set<MaterialDelivery> materialDeliveries = new HashSet<>();
 
     @EmbeddedId
     public MaterialSupplierId getMaterialSupplierId() {
@@ -67,6 +74,20 @@ public class MaterialSupplier {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    @OneToMany(mappedBy = "materialDeliveryId.materialSupplier",
+            cascade = CascadeType.ALL)
+    public Set<MaterialDelivery> getMaterialDeliveries() {
+        return materialDeliveries;
+    }
+
+    public void setMaterialDeliveries(Set<MaterialDelivery> materialDeliveries) {
+        this.materialDeliveries = materialDeliveries;
+    }
+    
+    public void addMaterialDeliveries(MaterialDelivery materialDelivery) {
+        this.materialDeliveries.add(materialDelivery);
     }
     
 }

@@ -2,7 +2,6 @@
 package Forms;
 
 import java.awt.Color;
-import java.util.Arrays;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -12,9 +11,6 @@ import javax.swing.text.JTextComponent;
 
 public class CreateAccount extends javax.swing.JFrame {
 
-    
-    
-    
     //String messages
     String requiredMessage = "field is required.";
     String errorMessage = "invalid input.";

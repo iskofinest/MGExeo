@@ -34,5 +34,18 @@ public class MaterialSupplierService {
         session.close();
         return materialSupplier;
     }
+
+    public static MaterialSupplier findBySupplierIdAndItemCode(int supplierId, String itemCode) {
+        String hql = "SELECT ms FROM Material m "
+                + "LEFT JOIN m.materialSuppliers ms LEFT JOIN ms.materialSupplierId.supplier s "
+                + "WHERE s.id=:supplier_id and m.code=:materialCode";
+        Session session = Utilities.HibernateUtil.getSessionFactory().openSession();
+        Query query = session.createQuery(hql);
+        query.setInteger("supplier_id", supplierId);
+        query.setString("materialCode", itemCode);
+        List<MaterialSupplier> materialSupplier = query.list();
+        MaterialSupplier ms = (MaterialSupplier) materialSupplier.get(0);
+        return ms;
+    }
     
 }

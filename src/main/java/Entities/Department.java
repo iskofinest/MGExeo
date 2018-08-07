@@ -22,7 +22,8 @@ public class Department {
     
     private Set<User> employees = new HashSet<>();
     private Set<Project> projects = new HashSet<>();
-
+    private Set<TransactionIn> transactionsIns = new HashSet<>();
+    
     public Department() {
     }
 
@@ -74,6 +75,23 @@ public class Department {
 
     public void setProjects(Set<Project> projects) {
         this.projects = projects;
+    }
+    
+    public void addProject(Project project) {
+        this.projects.add(project);;
+    }
+
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
+    public Set<TransactionIn> getTransactionsIns() {
+        return transactionsIns;
+    }
+
+    public void setTransactionsIns(Set<TransactionIn> transactionsIns) {
+        this.transactionsIns = transactionsIns;
+    }
+    
+    private void addTransactionIn(TransactionIn transactionIn) {
+        this.transactionsIns.add(transactionIn);
     }
      
 }

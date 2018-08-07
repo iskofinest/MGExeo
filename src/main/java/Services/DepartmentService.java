@@ -1,19 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package Services;
 
 import Entities.Department;
 import java.util.List;
+import javax.swing.JOptionPane;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
-/**
- *
- * @author user
- */
 public class DepartmentService {
 
     public static Department findDepartmentById(int departmentId) {
@@ -47,6 +41,21 @@ public class DepartmentService {
         String departmentName = (String) query.list().get(0);
         session.close();
         return departmentName;
+    }
+
+    public static boolean saveDepartment(Department department) {
+        try{
+            Session session = Utilities.HibernateUtil.getSessionFactory().openSession();
+            Transaction tx = session.beginTransaction();
+            System.out.print(session.save(department) + " Department saved inside method");
+            tx.commit();
+            session.close();
+        } catch(Exception e) {
+            System.out.println(e.toString());
+            JOptionPane.showMessageDialog(null, e.toString(), "ERROR OCCURED", 0);
+            return false;
+        }
+        return true;
     }
     
 }

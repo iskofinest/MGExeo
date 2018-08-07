@@ -3,6 +3,7 @@ package com.mycompany.mgexeo;
 
 import Entities.Department;
 import Entities.JoinedTables.BorrowTool;
+import Entities.JoinedTables.MaterialDelivery;
 import Entities.JoinedTables.MaterialSupplier;
 import Entities.JoinedTables.ToolSupplier;
 import Entities.Material;
@@ -10,9 +11,11 @@ import Entities.MaterialRequest;
 import Entities.Project;
 import Entities.Supplier;
 import Entities.Tool;
-import Entities.Transactions;
+import Entities.TransactionIn;
+import Entities.TransactionOut;
 import Entities.User;
 import Services.DepartmentService;
+import Services.MaterialDeliveryService;
 import Services.MaterialService;
 import Services.MaterialSupplierService;
 import Services.ProjectService;
@@ -20,13 +23,16 @@ import Services.RequestService;
 import Services.SupplierService;
 import Services.ToolService;
 import Services.ToolSupplierService;
+import Services.TransactionInService;
 import Services.TransactionService;
 import Services.UserService;
+import Utilities.HibernateUtil;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import org.hibernate.Session;
 
 public class Tests {
     
@@ -98,7 +104,7 @@ public class Tests {
     }
     
     static Project project;
-    static Transactions transaction;
+    static TransactionOut transaction;
     
     public static void testProject() {
         project = new Project();
@@ -112,52 +118,52 @@ public class Tests {
         System.out.println("PROJECT SAVED: " + ProjectService.saveProject(project));
     }
     
-    public static void testTransaction() {
-        transaction = new Transactions("transaction code", "IN", new Date(), new Date(), BigDecimal.valueOf(Double.parseDouble("369")));
-        transaction.setProject(project);
-        System.out.println("TRANSACTION SAVED: " + TransactionService.saveTransaction(transaction));
-    }
+//    public static void testTransaction() {
+//        transaction = new TransactionOut("transaction code", "IN", new Date(), new Date(), BigDecimal.valueOf(Double.parseDouble("369")));
+//        transaction.setProject(project);
+//        System.out.println("TRANSACTION SAVED: " + TransactionService.saveTransaction(transaction));
+//    }
+//    
+//    public static void testRequest() {
+//        material = new Material();
+//        material.setCode("123");
+//        material.setDescription("material description");
+//        material.setUnit("pcs");
+//        System.out.println("MATERIAL SAVED: " + MaterialService.saveMaterial(material));
+//        
+//        MaterialRequest materialRequest = new MaterialRequest();
+//        materialRequest.setQuantity(10);
+//        materialRequest.setTotalAmount(BigDecimal.valueOf(Double.parseDouble("13579")));
+//        materialRequest.setTransaction(transaction);
+//        materialRequest.setMaterial(material);
+//        System.out.println("MATERIAL REQUEST SAVED: " + RequestService.saveRequest(materialRequest));
+//        
+//    }
     
-    public static void testRequest() {
-        material = new Material();
-        material.setCode("123");
-        material.setDescription("material description");
-        material.setUnit("pcs");
-        System.out.println("MATERIAL SAVED: " + MaterialService.saveMaterial(material));
-        
-        MaterialRequest materialRequest = new MaterialRequest();
-        materialRequest.setQuantity(10);
-        materialRequest.setTotalAmount(BigDecimal.valueOf(Double.parseDouble("13579")));
-        materialRequest.setTransaction(transaction);
-        materialRequest.setMaterial(material);
-        System.out.println("MATERIAL REQUEST SAVED: " + RequestService.saveRequest(materialRequest));
-        
-    }
-    
-    public static void testBorrowTool() {
-        Tool tool = new Tool("tool code", "tool description", "tool unit", "tool brand", "tool size", "tool color");
-        System.out.println("TOOL SAVED: " + ToolService.saveTool(tool));
-        
-        BorrowTool borrowTool = new BorrowTool();
-        borrowTool.setQuantity(5);
-        borrowTool.setTool(tool);
-        borrowTool.setTotalAmount(BigDecimal.valueOf(1235));
-        borrowTool.setBorrowDate(new Date());
-        Calendar c = Calendar.getInstance();
-        c.setTime(new Date()); // Now use today date.
-        c.add(Calendar.DATE, 5);
-        borrowTool.setReturnDate(c.getTime());
-        borrowTool.setTransaction(transaction);
-        System.out.println("BORROW TOOL SAVED: " + ToolService.saveBorrowTool(borrowTool));
-        
-    }
-    
-    public static void testUserTransaction() {
-        Transactions transactions = TransactionService.findTransactionById(1);
-        User user = UserService.findUserById(1);
-        transactions.setRequisitioner(user);
-        if(TransactionService.updateTransaction(transactions)) System.out.println("Transaction - User updated");
-    }
+//    public static void testBorrowTool() {
+//        Tool tool = new Tool("tool code", "tool description", "tool unit", "tool brand", "tool size", "tool color");
+//        System.out.println("TOOL SAVED: " + ToolService.saveTool(tool));
+//        
+//        BorrowTool borrowTool = new BorrowTool();
+//        borrowTool.setQuantity(5);
+//        borrowTool.setTool(tool);
+//        borrowTool.setTotalAmount(BigDecimal.valueOf(1235));
+//        borrowTool.setBorrowDate(new Date());
+//        Calendar c = Calendar.getInstance();
+//        c.setTime(new Date()); // Now use today date.
+//        c.add(Calendar.DATE, 5);
+//        borrowTool.setReturnDate(c.getTime());
+//        borrowTool.setTransaction(transaction);
+//        System.out.println("BORROW TOOL SAVED: " + ToolService.saveBorrowTool(borrowTool));
+//        
+//    }
+//    
+//    public static void testUserTransaction() {
+//        TransactionOut transactions = TransactionService.findTransactionById(1);
+//        User user = UserService.findUserById(1);
+//        transactions.setRequisitioner(user);
+//        if(TransactionService.updateTransaction(transactions)) System.out.println("Transaction - User updated");
+//    }
     
     public static void testUserDepartment() {
         String code = "001";
@@ -191,7 +197,7 @@ public class Tests {
 //                materialSupplier.setPrice(BigDecimal.valueOf(Double.parseDouble(String.valueOf(random.nextInt(10001)))));
 //                if(MaterialSupplierService.saveMaterialSupplier(materialSupplier)) 
 //                    System.out.println("MATERIAL SUCCESSFULLY SAVED :D");
-//                else System.err.println("MATERIAL SUCCESSFULLY SAVED :D");
+//                else System.err.println("MATERIAL NOT SUCCESSFULLY SAVED :D");
 //            });
 
             tools.forEach(tool -> {
@@ -206,6 +212,86 @@ public class Tests {
             });
         });
         System.out.println("DONE DONE DONE . . . . .");
+    }
+    
+    public static void test() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.close();
+    }
+    
+    public static void testMaterialDelivery() {
+        Supplier supplier = new Supplier("0001", 
+                "BL Construction Supply", 
+                "1466 Doroteo Jose St, Santa Cruz, Manila", 
+                "827-62-62", 
+                "person1@email.com",
+                "person 1",
+                "0123456789",
+                "09994218650"
+        );
+        
+        Department department = new Department("001", "IT Department");
+        
+        TransactionIn  transactionIn = new TransactionIn();
+        transactionIn.setTransactionCode("001");
+        transactionIn.setTransactionInDate(new Date());
+        transactionIn.setDeliveryReceiptNo("0730201801");
+        transactionIn.setPurchaseOrderNo("0725201801");
+//        transactionIn.setVat(BigDecimal.valueOf(Double.parseDouble("55.85")));
+//        transactionIn.setNetAmount(new Date());
+//        transactionIn.setTotalAmount(new Date());
+        transactionIn.setRemarks("This is only a sample remarks");
+        transactionIn.setTransactionInDate(new Date());
+        transactionIn.setDepartment(department);
+        
+        Material material = new Material("001", "VALVE", "pcs");
+        MaterialSupplier materialSupplier = new MaterialSupplier();
+        materialSupplier.setMaterial(material);
+        materialSupplier.setSupplier(supplier);
+        materialSupplier.setPrice(BigDecimal.valueOf(Double.parseDouble("1508.95")));
+        
+        MaterialDelivery materialDelivery = new MaterialDelivery();
+        materialDelivery.setMaterialSupplier(materialSupplier);
+        materialDelivery.setTransactionIn(transactionIn);
+        transactionIn.setSupplier(supplier);
+        
+        
+        if(SupplierService.saveSupplier(supplier)) {
+            System.out.println("Supplier saved");
+        } else {
+            System.out.println("Supplier not saved");
+        }
+        
+        if(MaterialService.saveMaterial(material)) {
+            System.out.println("Material Saved");
+        } else {
+            System.out.println("Material not saved");
+        }
+        
+        if(DepartmentService.saveDepartment(department)) {
+            System.out.println("Department saved");
+        } else {
+            System.out.println("Department not saved");
+        }
+        
+        if(TransactionInService.saveTransactionIn(transactionIn)) {
+            System.out.println("Transaction In Saved");
+        } else {
+            System.out.println("Transaction In Not Saved");
+        }
+        
+        if(MaterialSupplierService.saveMaterialSupplier(materialSupplier)) {
+            System.out.println("Material Supplier In Saved");
+        } else {
+            System.out.println("Material Supplier Not Saved");
+        }
+        
+        if(MaterialDeliveryService.saveMaterialDelivery(materialDelivery)) {
+            System.out.println("Material Delivery Saved");
+        } else {
+            System.out.println("Material Delivery not saved");
+        }
+        
     }
     
 }

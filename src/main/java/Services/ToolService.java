@@ -3,7 +3,6 @@ package Services;
 
 import Entities.JoinedTables.BorrowTool;
 import Entities.JoinedTables.ToolSupplier;
-import Entities.Material;
 import Entities.Tool;
 import java.util.List;
 import java.util.logging.Level;

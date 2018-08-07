@@ -30,6 +30,7 @@ public class Supplier {
     
     private Set<MaterialSupplier> materialSuppliers = new HashSet<>();
     private Set<ToolSupplier> toolSuppliers = new HashSet<>();
+    private Set<TransactionIn> transactionIns = new HashSet<>();
     
     public Supplier() {
     }
@@ -146,6 +147,19 @@ public class Supplier {
     
     public void addToolSupplier(ToolSupplier toolSupplier) {
         this.toolSuppliers.add(toolSupplier);
+    }
+
+    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
+    public Set<TransactionIn> getTransactionIns() {
+        return transactionIns;
+    }
+
+    public void setTransactionIns(Set<TransactionIn> transactionIns) {
+        this.transactionIns = transactionIns;
+    }
+    
+    public void addTransactionIns(TransactionIn transactionIn) {
+        this.transactionIns.add(transactionIn);
     }
 
     @Override
