@@ -105,5 +105,14 @@ public class MaterialService {
         System.out.println("COUNT: " + query.list().get(0));
         return existing;
     }
+
+    static Material findByItemCode(String itemCode) {
+        String hql = "SELECT m FROM Material m WHERE m.code=:itemCode";
+        Session session = Utilities.HibernateUtil.getSessionFactory().openSession();
+        Query query = session.createQuery(hql);
+        query.setString("itemCode", itemCode);
+        Material material = (Material)query.list().get(0);
+        return material;
+    }
     
 }

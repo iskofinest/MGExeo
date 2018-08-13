@@ -74,6 +74,8 @@ Contributor(s):
     <mapping class="Entities.JoinedTables.MaterialDelivery"/>
     <mapping class="Entities.JoinedTables.ToolDelivery"/>
     <mapping class="Entities.JoinedTables.MaterialSupplierId"/>
+    <mapping class="Entities.JoinedTables.MaterialStock"/>
+    <mapping class="Entities.JoinedTables.ToolStock"/>
     
 <!--    <mapping class="Entities.Project"/>
     <mapping class="Entities.Request"/>

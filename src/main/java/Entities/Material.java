@@ -1,6 +1,7 @@
 
 package Entities;
 
+import Entities.JoinedTables.MaterialStock;
 import Entities.JoinedTables.MaterialSupplier;
 import java.util.HashSet;
 import java.util.Set;
@@ -11,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -24,6 +26,7 @@ public class Material {
     
     private Set<MaterialSupplier> materialSuppliers = new HashSet<>();
     private Set<MaterialRequest> materialRequests = new HashSet<>();
+    private MaterialStock materialStock;
 
     public Material() {
     }
@@ -96,6 +99,15 @@ public class Material {
     
     public void addMaterialRequest(MaterialRequest materialRequest) {
         this.materialRequests.add(materialRequest);
+    }
+
+    @OneToOne(mappedBy = "material", cascade = CascadeType.ALL)
+    public MaterialStock getMaterialStock() {
+        return materialStock;
+    }
+
+    public void setMaterialStock(MaterialStock materialStock) {
+        this.materialStock = materialStock;
     }
 
     @Override

@@ -2,6 +2,7 @@
 package Entities;
 
 import Entities.JoinedTables.BorrowTool;
+import Entities.JoinedTables.ToolStock;
 import Entities.JoinedTables.ToolSupplier;
 import java.io.Serializable;
 import java.util.Set;
@@ -12,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -29,6 +31,7 @@ public class Tool implements Serializable {
     
     private Set<ToolSupplier> toolSuppliers;
     private Set<BorrowTool> borrowTools;
+    ToolStock toolStock;
 
     public Tool() {}
 
@@ -121,6 +124,15 @@ public class Tool implements Serializable {
     
     public void addBorrowTool(BorrowTool borrowTool) {
         this.borrowTools.add(borrowTool);
+    }
+
+    @OneToOne(mappedBy = "tool", cascade = CascadeType.ALL)
+    public ToolStock getToolStock() {
+        return toolStock;
+    }
+
+    public void setToolStock(ToolStock toolStock) {
+        this.toolStock = toolStock;
     }
 
     @Override

@@ -18,6 +18,7 @@ import Entities.Tool;
 import Entities.TransactionIn;
 import Services.DepartmentService;
 import Services.MaterialDeliveryService;
+import Services.MaterialStockService;
 import Services.MaterialSupplierService;
 import Services.ProjectService;
 import Services.SupplierService;
@@ -1009,8 +1010,8 @@ public class AddReceivingReport extends javax.swing.JFrame {
                     materialDelivery.setMaterialSupplier(materialSupplier);
                     materialDelivery.setTotalAmount(totalCost);
                     transactionIn.addMaterialDeliveries(materialDelivery);
-//                    transactionIn.addMaterialDeliveries(materialDelivery);
                     materialDelivery.setTransactionIn(transactionIn);
+                    MaterialStockService.addStock(itemCode, Integer.parseInt(row.get(3).toString()), totalCost);
                     if(MaterialDeliveryService.saveMaterialDelivery(materialDelivery)) {
                         System.err.println("MATERIAL DELIVERY SAVED");
                     }
@@ -1266,12 +1267,12 @@ public class AddReceivingReport extends javax.swing.JFrame {
         txtApprovedBy.setText("");
         txtCheckedBy.setText("");
         txtVerifiedBy.setText("");
-        cbxSupplierName.setSelectedIndex(-1);
-        cbxSupplierId.setSelectedIndex(-1);
-        cbxProjectName.setSelectedIndex(-1);
-        cbxDepartmentName.setSelectedIndex(-1);
-        cbxItemCode.setSelectedIndex(-1);
-        cbxDescription.setSelectedIndex(-1);
+        cbxSupplierName.setSelectedIndex(0);
+        cbxSupplierId.setSelectedIndex(0);
+        cbxProjectName.setSelectedIndex(0);
+        cbxDepartmentName.setSelectedIndex(0);
+        cbxItemCode.setSelectedIndex(0);
+        cbxDescription.setSelectedIndex(0);
         jdcDate.setDate(new Date());
     }
     
