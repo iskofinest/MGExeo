@@ -68,5 +68,17 @@ public class ProjectService {
         session.close();
         return projects;
     }
+
+    public static Project findByNameAndDepartment(String projectName, int departmentId) {
+        String hql = "Select p from Project p left join p.department d where d.id=:departmentId and p.projectName=:projectName";
+        Session session = Utilities.HibernateUtil.getSessionFactory().openSession();
+        Query query = session.createQuery(hql);
+        query.setInteger("departmentId", departmentId);
+        query.setString("projectName", projectName);
+        Project project = (Project) query.list().get(0);
+        System.err.println(project.getProjectName());
+        session.close();
+        return project;
+    }
     
 }

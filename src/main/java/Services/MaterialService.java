@@ -2,6 +2,7 @@
 package Services;
 
 import Entities.Material;
+import Entities.Supplier;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -77,5 +78,32 @@ public class MaterialService {
 //        session.close();
 //        return materials;
 //    }
+
+    public static List<Material> findByNotInSupplier(Supplier supplier) {
+        List<Material> materials = null;
+        String hql = "SELECT m FROM Material m WHERE m.id NOT IN ("
+                + "SELECT m.id from Material m "
+                + "LEFT JOIN m.materialSuppliers ms "
+                + "LEFT JOIN ms.materialSupplierId.supplier s "
+                + "WHERE s.id=:supplierId)";
+        
+        Session session = Utilities.HibernateUtil.getSessionFactory().openSession();
+        Query query = session.createQuery(hql);
+        query.setInteger("supplierId", supplier.getId());
+        materials = query.list();
+        session.close();
+        return materials;
+    }
+
+    public static boolean isExisting(String column, String value) {
+        boolean existing = false;
+        String hql = "SELECT COUNT(m.code) FROM Material m WHERE m." + column + "=:value";
+        Session session = Utilities.HibernateUtil.getSessionFactory().openSession();
+        Query query = session.createQuery(hql);
+        query.setString("value", value);
+        existing = Integer.parseInt(query.list().get(0).toString()) > 0;
+        System.out.println("COUNT: " + query.list().get(0));
+        return existing;
+    }
     
 }

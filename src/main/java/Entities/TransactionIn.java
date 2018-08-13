@@ -37,7 +37,6 @@ public class TransactionIn {
     
     private Supplier supplier;
     private Project project;
-    private Department department;
     private Set<MaterialDelivery> materialDeliveries = new HashSet<>();
     private Set<ToolDelivery> toolDeliveries = new HashSet<>();
     
@@ -150,16 +149,6 @@ public class TransactionIn {
         this.project = project;
     }
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "department_id")
-    public Department getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(Department department) {
-        this.department = department;
-    }
-    
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "created_by")
     public User getCreatedBy() {

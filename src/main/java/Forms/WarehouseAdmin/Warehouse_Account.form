@@ -73,11 +73,11 @@
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Group type="103" alignment="1" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <Component id="jButton2" min="-2" pref="194" max="-2" attributes="0"/>
+                              <Component id="btnViewNotifications" min="-2" pref="194" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jButton7" min="-2" pref="195" max="-2" attributes="0"/>
+                              <Component id="btnAddWithdrawalReport" min="-2" pref="195" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jButton10" min="-2" pref="195" max="-2" attributes="0"/>
+                              <Component id="btnAddReceivingReport" min="-2" pref="195" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
                               <Component id="jButton5" min="-2" pref="217" max="-2" attributes="0"/>
@@ -92,11 +92,11 @@
                           </Group>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
-                          <Component id="jButton3" min="-2" pref="195" max="-2" attributes="0"/>
+                          <Component id="btnViewItems" min="-2" pref="195" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jButton8" min="-2" pref="195" max="-2" attributes="0"/>
+                          <Component id="btnAddReturnReport" min="-2" pref="195" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jButton9" min="-2" pref="195" max="-2" attributes="0"/>
+                          <Component id="btnViewSummaryReports" min="-2" pref="195" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
@@ -126,9 +126,9 @@
                           <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="64" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="jButton7" alignment="3" min="-2" pref="43" max="-2" attributes="0"/>
-                              <Component id="jButton10" alignment="3" min="-2" pref="43" max="-2" attributes="0"/>
-                              <Component id="jButton2" alignment="3" min="-2" pref="44" max="-2" attributes="0"/>
+                              <Component id="btnAddWithdrawalReport" alignment="3" min="-2" pref="43" max="-2" attributes="0"/>
+                              <Component id="btnAddReceivingReport" alignment="3" min="-2" pref="43" max="-2" attributes="0"/>
+                              <Component id="btnViewNotifications" alignment="3" min="-2" pref="44" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -138,9 +138,9 @@
                       </Group>
                   </Group>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jButton3" alignment="3" min="-2" pref="43" max="-2" attributes="0"/>
-                      <Component id="jButton8" alignment="3" min="-2" pref="43" max="-2" attributes="0"/>
-                      <Component id="jButton9" alignment="3" min="-2" pref="43" max="-2" attributes="0"/>
+                      <Component id="btnViewItems" alignment="3" min="-2" pref="43" max="-2" attributes="0"/>
+                      <Component id="btnAddReturnReport" alignment="3" min="-2" pref="43" max="-2" attributes="0"/>
+                      <Component id="btnViewSummaryReports" alignment="3" min="-2" pref="43" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="28" max="32767" attributes="0"/>
               </Group>
@@ -174,7 +174,7 @@
             <Property name="text" type="java.lang.String" value="Sta. Ana Drive, Sun Valley, Paranaque City, Philipppines"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton2">
+        <Component class="javax.swing.JButton" name="btnViewNotifications">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="cc" green="cc" red="cc" type="rgb"/>
@@ -185,7 +185,7 @@
             <Property name="text" type="java.lang.String" value="VIEW NOTIFICATIONS"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton7">
+        <Component class="javax.swing.JButton" name="btnAddWithdrawalReport">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="cc" green="cc" red="cc" type="rgb"/>
@@ -195,11 +195,8 @@
             </Property>
             <Property name="text" type="java.lang.String" value="ADD WITHDRAWAL REPORT"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton7ActionPerformed"/>
-          </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton10">
+        <Component class="javax.swing.JButton" name="btnAddReceivingReport">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="cc" green="cc" red="cc" type="rgb"/>
@@ -210,10 +207,10 @@
             <Property name="text" type="java.lang.String" value="ADD RECEIVING REPORT"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton10ActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddReceivingReportActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton3">
+        <Component class="javax.swing.JButton" name="btnViewItems">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="cc" green="cc" red="cc" type="rgb"/>
@@ -224,7 +221,7 @@
             <Property name="text" type="java.lang.String" value="VIEW ITEMS"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton8">
+        <Component class="javax.swing.JButton" name="btnAddReturnReport">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="cc" green="cc" red="cc" type="rgb"/>
@@ -234,11 +231,8 @@
             </Property>
             <Property name="text" type="java.lang.String" value="ADD RETURN REPORT"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton8ActionPerformed"/>
-          </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton9">
+        <Component class="javax.swing.JButton" name="btnViewSummaryReports">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="cc" green="cc" red="cc" type="rgb"/>
@@ -248,9 +242,6 @@
             </Property>
             <Property name="text" type="java.lang.String" value="VIEW SUMMARY REPORTS"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton9ActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel3">
           <Properties>

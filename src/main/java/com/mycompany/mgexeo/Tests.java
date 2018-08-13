@@ -205,7 +205,7 @@ public class Tests {
                 toolSupplier.setTool(tool);
                 toolSupplier.setSupplier(supplier);
                 toolSupplier.setCurrency("PHP");
-                toolSupplier.setPrice(BigDecimal.valueOf(Double.parseDouble(String.valueOf(random.nextInt(10001)))));
+                toolSupplier.setPrice(BigDecimal.valueOf(Double.parseDouble(String.valueOf(random.nextInt(11001)))));
                 if(ToolSupplierService.saveToolSupplier(toolSupplier))
                     System.out.println("TOOL SUPPLIER SUCCESSFULLY SAVED");
                 else System.err.println("TOOL SUPPLIER NOT SUCCESSFULLY SAVED");
@@ -242,7 +242,6 @@ public class Tests {
 //        transactionIn.setTotalAmount(new Date());
         transactionIn.setRemarks("This is only a sample remarks");
         transactionIn.setTransactionInDate(new Date());
-        transactionIn.setDepartment(department);
         
         Material material = new Material("001", "VALVE", "pcs");
         MaterialSupplier materialSupplier = new MaterialSupplier();

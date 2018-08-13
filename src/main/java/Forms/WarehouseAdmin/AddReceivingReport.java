@@ -2,6 +2,8 @@
 package Forms.WarehouseAdmin;
 
 // <editor-fold defaultstate="collapsed" desc="Imports">       
+import ConstantHandlers.ConstantHandler;
+import ConstantHandlers.PublicMethods;
 import Entities.Department;
 import Entities.JoinedTables.MaterialDelivery;
 import Entities.JoinedTables.MaterialSupplier;
@@ -25,6 +27,7 @@ import Services.TransactionInService;
 import java.math.BigDecimal;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
@@ -46,6 +49,7 @@ public class AddReceivingReport extends javax.swing.JFrame {
     private String[] titles = new String[] {"Category", "Item Code", "Description", "Qty", "Unit", "Unit Cost", "Total Cost"};
     private int tableIndex = 0;
     private BigDecimal transactionTotalAmount = new BigDecimal(0);
+    JFrame previousForm;
      //</editor-fold>
 
 
@@ -55,6 +59,16 @@ public class AddReceivingReport extends javax.swing.JFrame {
             columns.addElement(column);
         }
 
+        initializeData();
+    }
+    
+    public AddReceivingReport(JFrame previousForm) {
+        initComponents();
+        this.previousForm = previousForm;
+        for(String column: titles) {
+            columns.addElement(column);
+        }
+        
         initializeData();
     }
     
@@ -79,6 +93,7 @@ public class AddReceivingReport extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         cbxSupplierId = new javax.swing.JComboBox<>();
         cbxSupplierName = new javax.swing.JComboBox<>();
+        btnAddProject = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
@@ -121,6 +136,9 @@ public class AddReceivingReport extends javax.swing.JFrame {
         jLabel21 = new javax.swing.JLabel();
         txtVat = new javax.swing.JTextField();
         jLabel22 = new javax.swing.JLabel();
+        jLabel23 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtRemarks = new javax.swing.JTextArea();
         jPanel7 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         btnSaveData = new javax.swing.JButton();
@@ -204,6 +222,14 @@ public class AddReceivingReport extends javax.swing.JFrame {
             }
         });
 
+        btnAddProject.setFont(new java.awt.Font("Arial Black", 1, 14)); // NOI18N
+        btnAddProject.setText("+");
+        btnAddProject.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddProjectActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -218,18 +244,21 @@ public class AddReceivingReport extends javax.swing.JFrame {
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbxSupplierName, 0, 359, Short.MAX_VALUE))
+                        .addComponent(cbxSupplierName, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(cbxDepartmentName, 0, 359, Short.MAX_VALUE)
-                            .addComponent(cbxProjectName, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(cbxSupplierId, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addGap(0, 0, 0))
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(cbxProjectName, 0, 315, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnAddProject, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(cbxSupplierId, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cbxDepartmentName, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -246,10 +275,11 @@ public class AddReceivingReport extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cbxSupplierId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(7, 7, 7)
+                .addGap(6, 6, 6)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cbxProjectName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbxProjectName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAddProject, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addGap(7, 7, 7)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -526,7 +556,7 @@ public class AddReceivingReport extends javax.swing.JFrame {
                     .addComponent(txtTotalCost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnAddItemToTable)
-                .addContainerGap(298, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(102, 153, 255));
@@ -565,6 +595,7 @@ public class AddReceivingReport extends javax.swing.JFrame {
         jLabel15.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         jLabel15.setText("Total Amount:  ");
 
+        txtTotalAmount.setEditable(false);
         txtTotalAmount.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
 
         txtNetAmount.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
@@ -615,24 +646,44 @@ public class AddReceivingReport extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jLabel23.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel23.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel23.setText("Remarks:  ");
+        jLabel23.setMaximumSize(new java.awt.Dimension(127, 22));
+        jLabel23.setMinimumSize(new java.awt.Dimension(127, 22));
+        jLabel23.setName(""); // NOI18N
+        jLabel23.setPreferredSize(new java.awt.Dimension(127, 22));
+
+        txtRemarks.setColumns(20);
+        txtRemarks.setFont(new java.awt.Font("Times New Roman", 3, 14)); // NOI18N
+        txtRemarks.setRows(5);
+        jScrollPane2.setViewportView(txtRemarks);
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(14, Short.MAX_VALUE))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(15, 15, 15)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         jPanel7.setMaximumSize(new java.awt.Dimension(536, 82));
@@ -673,6 +724,11 @@ public class AddReceivingReport extends javax.swing.JFrame {
         btnBack.setMaximumSize(new java.awt.Dimension(199, 25));
         btnBack.setMinimumSize(new java.awt.Dimension(199, 25));
         btnBack.setPreferredSize(new java.awt.Dimension(199, 25));
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
@@ -860,13 +916,23 @@ public class AddReceivingReport extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAddItemToTableActionPerformed
 
     private void btnAddItemToDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddItemToDatabaseActionPerformed
-        int index = cbxItemCode.getSelectedIndex();
+        Supplier supplier = suppliers.get(cbxSupplierName.getSelectedIndex());
         if(cbxCategory.getSelectedItem().toString().equals("Material")) {
-            MaterialSupplier materialSupplier = materialSuppliers.get(index);
-            Material material = materialSupplier.getMaterial();
+            MaterialSupplier materialSupplier = PublicMethods.addMaterialSupplier(this, supplier);
+            if(!materialSupplier.equals(null)) {
+                materialSuppliers.add(materialSupplier);
+                ((DefaultComboBoxModel)cbxItemCode.getModel()).addElement(materialSupplier.getMaterial().getCode());
+                ((DefaultComboBoxModel)cbxDescription.getModel()).addElement(materialSupplier.getMaterial().getDescription());
+            }
         } else {
-            
+            ToolSupplier toolSupplier = PublicMethods.addToolSupplier(this, supplier);
+            if(!toolSupplier.equals(null)) {
+                toolSuppliers.add(toolSupplier);
+                ((DefaultComboBoxModel) cbxItemCode.getModel()).addElement(toolSupplier.getTool().getCode());
+                ((DefaultComboBoxModel) cbxDescription.getModel()).addElement(toolSupplier.getTool().getDescription());
+            }
         }
+        
     }//GEN-LAST:event_btnAddItemToDatabaseActionPerformed
 
     private void txtQuantityCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txtQuantityCaretUpdate
@@ -911,24 +977,42 @@ public class AddReceivingReport extends javax.swing.JFrame {
     private void btnSaveDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveDataActionPerformed
         int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure you want to save this Transaction?", "CONFIRM SAVE", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
         if(confirmation == 0) {
+            BigDecimal totalTransactionAmount = new BigDecimal(0);
             int supplierId = suppliers.get(cbxSupplierId.getSelectedIndex()).getId();
             TransactionIn transactionIn = new TransactionIn();
             transactionIn.setSupplier(suppliers.get(cbxSupplierId.getSelectedIndex()));
+            transactionIn.setTransactionInDate(jdcDate.getDate());
+            Department department = departments.get(cbxDepartmentName.getSelectedIndex());
+            transactionIn.setProject(ProjectService.findByNameAndDepartment(cbxProjectName.getSelectedItem().toString(), department.getId()));
+            transactionIn.setRemarks(txtRemarks.getText());
+            transactionIn.setCreatedBy(ConstantHandler.user);
+            transactionIn.setCreatedAt(new Date());
+            transactionIn.setRemarks(txtRemarks.getText().trim());
+            transactionIn.setDeliveryReceiptNo(txtDeliveryReceiptNo.getText().trim());
+            transactionIn.setTransactionCode(txtTransactionCode.getText().trim());
+            transactionIn.setPurchaseOrderNo(txtPurchaseOrderNo.getText().trim());
             if(TransactionInService.saveTransactionIn(transactionIn)) {
-                System.out.println("TRANSACTION IN SAVED");
+                System.err.println("TRANSACTION IN SUCCESSFULLY SAVED");
+            } else {
+                System.err.println("TRANSACTION IN NOT SUCCESSFULLY SAVED");
             }
+//            List<MaterialDelivery> materialDeliverys = new List<>();
             for(Vector row : data) {
                 String itemCode = row.get(1).toString();
+                BigDecimal totalCost = BigDecimal.valueOf(Double.parseDouble(row.get(6).toString()));
+                totalTransactionAmount = totalTransactionAmount.add(totalCost);
                 if(row.get(0).toString().equals("Material")) { // If Material
                     MaterialSupplier materialSupplier = MaterialSupplierService.findBySupplierIdAndItemCode(supplierId, itemCode);
                     MaterialDelivery materialDelivery = new MaterialDelivery();
                     materialDelivery.setUnitCost(BigDecimal.valueOf(Double.parseDouble(row.get(5).toString())));
                     materialDelivery.setQuantity(Integer.parseInt(row.get(3).toString()));
                     materialDelivery.setMaterialSupplier(materialSupplier);
+                    materialDelivery.setTotalAmount(totalCost);
+                    transactionIn.addMaterialDeliveries(materialDelivery);
 //                    transactionIn.addMaterialDeliveries(materialDelivery);
                     materialDelivery.setTransactionIn(transactionIn);
                     if(MaterialDeliveryService.saveMaterialDelivery(materialDelivery)) {
-                        System.out.println("MATERIAL DELIVERY SAVED");
+                        System.err.println("MATERIAL DELIVERY SAVED");
                     }
                 } else { // If Tool
                     ToolSupplier toolSupplier = ToolSupplierService.findbySupplierIdAndItemCode(supplierId, itemCode);
@@ -936,15 +1020,35 @@ public class AddReceivingReport extends javax.swing.JFrame {
                     toolDelivery.setUnitCost(BigDecimal.valueOf(Double.parseDouble(row.get(5).toString())));
                     toolDelivery.setQuantity(Integer.parseInt(row.get(3).toString()));
                     toolDelivery.setToolSupplier(toolSupplier);
+                    toolDelivery.setTotalAmount(totalCost);
+                    transactionIn.addToolDelivery(toolDelivery);
                     toolDelivery.setTransactionIn(transactionIn);
                     if(ToolDeliveryService.saveToolDelivery(toolDelivery)) {
-                        System.out.println("TOOL DELIVERY SAVED");
+                        System.err.println("TOOL DELIVERY SAVED");
                     }
                 }
             }
-            JOptionPane.showMessageDialog(null, "TRANSACTION IN SUCCESSFULLYY SAVED!!");
+            transactionIn.setTotalAmount(totalTransactionAmount);
+            TransactionInService.updateTransactionIn(transactionIn);
+            JOptionPane.showMessageDialog(null, "TRANSACTION SUCCESSFULLY SAVED. . . .");
+            clearFields();
         }
     }//GEN-LAST:event_btnSaveDataActionPerformed
+
+    private void btnAddProjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProjectActionPerformed
+        Project project = PublicMethods.addProject(this);
+        if(!project.equals(null)) {
+            ((DefaultComboBoxModel) cbxProjectName.getModel()).addElement(project.getProjectName());
+        }
+    }//GEN-LAST:event_btnAddProjectActionPerformed
+
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        // TODO add your handling code here:
+        SwingUtilities.invokeLater(() -> {
+            previousForm.setVisible(true);
+            dispose();
+        });
+    }//GEN-LAST:event_btnBackActionPerformed
 
     //</editor-fold>
     /**
@@ -981,6 +1085,73 @@ public class AddReceivingReport extends javax.swing.JFrame {
             }
         });
     }
+    
+    //<editor-fold defaultstate="collapsed" desc=" Variable Declarations ">
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddItemToDatabase;
+    private javax.swing.JButton btnAddItemToTable;
+    private javax.swing.JButton btnAddProject;
+    private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnSaveData;
+    private javax.swing.JComboBox<String> cbxCategory;
+    private javax.swing.JComboBox<String> cbxDepartmentName;
+    private javax.swing.JComboBox<String> cbxDescription;
+    private javax.swing.JComboBox<String> cbxItemCode;
+    private javax.swing.JComboBox<String> cbxProjectName;
+    private javax.swing.JComboBox<String> cbxSupplierId;
+    private javax.swing.JComboBox<String> cbxSupplierName;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private com.toedter.calendar.JDateChooser jdcDate;
+    private javax.swing.JLabel lblCode;
+    private javax.swing.JPanel mainPanel;
+    private javax.swing.JTable tblDeliveryItems;
+    private javax.swing.JTextField txtApprovedBy;
+    private javax.swing.JTextField txtCheckedBy;
+    private javax.swing.JTextField txtDeliveryReceiptNo;
+    private javax.swing.JTextField txtNetAmount;
+    private javax.swing.JTextField txtPurchaseOrderNo;
+    private javax.swing.JTextField txtQuantity;
+    private javax.swing.JTextField txtReceivedBy;
+    private javax.swing.JTextArea txtRemarks;
+    private javax.swing.JTextField txtTotalAmount;
+    private javax.swing.JTextField txtTotalCost;
+    private javax.swing.JTextField txtTransactionCode;
+    private javax.swing.JTextField txtUnit;
+    private javax.swing.JTextField txtUnitCost;
+    private javax.swing.JTextField txtVat;
+    private javax.swing.JTextField txtVerifiedBy;
+    // End of variables declaration//GEN-END:variables
+    //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc=" Custom Code ">
     
@@ -1019,8 +1190,6 @@ public class AddReceivingReport extends javax.swing.JFrame {
             jdcDate.setDate(new Date());
             setItemDropDown();
         });
-//        System.out.println("UNIT: " + materialSuppliers.get(0).getMaterial().getUnit());
-//        System.out.println("PRICE: " + String.valueOf(materialSuppliers.get(0).getPrice()));
         SwingUtilities.invokeLater(() -> {
             setUnitAndPrice(materialSuppliers.get(0).getMaterial().getUnit(), String.valueOf(materialSuppliers.get(0).getPrice()));
         });
@@ -1081,69 +1250,30 @@ public class AddReceivingReport extends javax.swing.JFrame {
         return false;
     }
     
-    //</editor-fold>
+    private void clearFields() {
+        txtDeliveryReceiptNo.setText("");
+        txtTransactionCode.setText("");
+        txtPurchaseOrderNo.setText("");
+        txtQuantity.setText("");
+        txtUnit.setText("");
+        txtUnitCost.setText("0.00");
+        txtTotalCost.setText("0.00");
+        txtTotalAmount.setText("0.00");
+        txtRemarks.setText("");
+        txtVat.setText("0.00");
+        txtNetAmount.setText("0.00");
+        txtReceivedBy.setText("");
+        txtApprovedBy.setText("");
+        txtCheckedBy.setText("");
+        txtVerifiedBy.setText("");
+        cbxSupplierName.setSelectedIndex(-1);
+        cbxSupplierId.setSelectedIndex(-1);
+        cbxProjectName.setSelectedIndex(-1);
+        cbxDepartmentName.setSelectedIndex(-1);
+        cbxItemCode.setSelectedIndex(-1);
+        cbxDescription.setSelectedIndex(-1);
+        jdcDate.setDate(new Date());
+    }
     
-    
-    //<editor-fold defaultstate="collapsed" desc=" Variable Declarations ">
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAddItemToDatabase;
-    private javax.swing.JButton btnAddItemToTable;
-    private javax.swing.JButton btnBack;
-    private javax.swing.JButton btnSaveData;
-    private javax.swing.JComboBox<String> cbxCategory;
-    private javax.swing.JComboBox<String> cbxDepartmentName;
-    private javax.swing.JComboBox<String> cbxDescription;
-    private javax.swing.JComboBox<String> cbxItemCode;
-    private javax.swing.JComboBox<String> cbxProjectName;
-    private javax.swing.JComboBox<String> cbxSupplierId;
-    private javax.swing.JComboBox<String> cbxSupplierName;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel20;
-    private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel22;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
-    private javax.swing.JScrollPane jScrollPane1;
-    private com.toedter.calendar.JDateChooser jdcDate;
-    private javax.swing.JLabel lblCode;
-    private javax.swing.JPanel mainPanel;
-    private javax.swing.JTable tblDeliveryItems;
-    private javax.swing.JTextField txtApprovedBy;
-    private javax.swing.JTextField txtCheckedBy;
-    private javax.swing.JTextField txtDeliveryReceiptNo;
-    private javax.swing.JTextField txtNetAmount;
-    private javax.swing.JTextField txtPurchaseOrderNo;
-    private javax.swing.JTextField txtQuantity;
-    private javax.swing.JTextField txtReceivedBy;
-    private javax.swing.JTextField txtTotalAmount;
-    private javax.swing.JTextField txtTotalCost;
-    private javax.swing.JTextField txtTransactionCode;
-    private javax.swing.JTextField txtUnit;
-    private javax.swing.JTextField txtUnitCost;
-    private javax.swing.JTextField txtVat;
-    private javax.swing.JTextField txtVerifiedBy;
-    // End of variables declaration//GEN-END:variables
     //</editor-fold>
 }

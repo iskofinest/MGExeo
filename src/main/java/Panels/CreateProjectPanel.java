@@ -1,20 +1,30 @@
 
 package Panels;
 
-import ConstantHandlers.ConstantHandler;
+import Entities.Department;
 import Entities.Project;
+import Services.DepartmentService;
 import Services.ProjectService;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 public class CreateProjectPanel extends javax.swing.JPanel {
 
     private Project project;
+    private List<Department> departments;
     
     public CreateProjectPanel() {
         initComponents();
-        lblDepartmentName.setText(ConstantHandler.user.getDepartment().getName());
+        AutoCompleteDecorator.decorate(cbxDepartmentName);
+        departments = DepartmentService.findAll();
+        DefaultComboBoxModel departmentNameModel = new DefaultComboBoxModel();
+        departments.forEach(department -> departmentNameModel.addElement(department.getName()));
+        cbxDepartmentName.setModel(departmentNameModel);
+//        lblDepartmentName.setText(ConstantHandler.user.getDepartment().getName());
     }
     
     private void clearFields() {
@@ -43,7 +53,7 @@ public class CreateProjectPanel extends javax.swing.JPanel {
         jdcDateStarted = new com.toedter.calendar.JDateChooser();
         txtTotalBudget = new javax.swing.JTextField();
         btnSubmit = new javax.swing.JButton();
-        lblDepartmentName = new javax.swing.JLabel();
+        cbxDepartmentName = new javax.swing.JComboBox<>();
 
         setBorder(javax.swing.BorderFactory.createMatteBorder(5, 5, 5, 5, new java.awt.Color(0, 0, 0)));
         setMaximumSize(new java.awt.Dimension(471, 240));
@@ -80,6 +90,11 @@ public class CreateProjectPanel extends javax.swing.JPanel {
 
         txtTotalBudget.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         txtTotalBudget.setText("0.00");
+        txtTotalBudget.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtTotalBudgetKeyTyped(evt);
+            }
+        });
 
         btnSubmit.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         btnSubmit.setText("SUBMIT");
@@ -89,7 +104,7 @@ public class CreateProjectPanel extends javax.swing.JPanel {
             }
         });
 
-        lblDepartmentName.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        cbxDepartmentName.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -118,7 +133,7 @@ public class CreateProjectPanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblDepartmentName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(cbxDepartmentName, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -129,7 +144,7 @@ public class CreateProjectPanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
-                            .addComponent(lblDepartmentName))
+                            .addComponent(cbxDepartmentName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
@@ -145,14 +160,13 @@ public class CreateProjectPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(txtTotalBudget, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
                 .addComponent(btnSubmit)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
-
         int selection = JOptionPane.showConfirmDialog(null, "Are you sure you want to save this project to the database?", "CONFIRM SAVE PROJECT", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
         if(selection == 0) {
             String projectName = txtProjectName.getText();
@@ -165,7 +179,7 @@ public class CreateProjectPanel extends javax.swing.JPanel {
             project.setTotalBudget(totalBudget);
             project.setDateStarted(dateStarted);
             project.setDateCreated(new Date());
-            project.setDepartment(ConstantHandler.user.getDepartment());
+            project.setDepartment(departments.get(cbxDepartmentName.getSelectedIndex()));
             if(ProjectService.saveProject(project)) {
                 JOptionPane.showMessageDialog(null, "Project Successfully saved to the database", "TRANSACTION SUCCESS", JOptionPane.INFORMATION_MESSAGE);
                 clearFields();
@@ -173,8 +187,13 @@ public class CreateProjectPanel extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(null, "Project was not successfully created!!", "TRANSACTION FAILED", JOptionPane.ERROR_MESSAGE);
             }
         }
-        
     }//GEN-LAST:event_btnSubmitActionPerformed
+
+    private void txtTotalBudgetKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTotalBudgetKeyTyped
+        if (!Character.isDigit(evt.getKeyChar()) && !(evt.getKeyChar() == '.')){
+            evt.consume();
+        } 
+    }//GEN-LAST:event_txtTotalBudgetKeyTyped
 
     public Project getProject() {
         return project;
@@ -182,13 +201,13 @@ public class CreateProjectPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSubmit;
+    private javax.swing.JComboBox<String> cbxDepartmentName;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private com.toedter.calendar.JDateChooser jdcDateStarted;
-    private javax.swing.JLabel lblDepartmentName;
     private javax.swing.JTextField txtProjectCode;
     private javax.swing.JTextField txtProjectName;
     private javax.swing.JTextField txtTotalBudget;

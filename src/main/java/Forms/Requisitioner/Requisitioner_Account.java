@@ -1,9 +1,11 @@
 package Forms.Requisitioner;
 
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 public class Requisitioner_Account extends javax.swing.JFrame {
 
+    JFrame frame;
     /**
      * Creates new form Requisitioner_Account
      */
@@ -156,8 +158,8 @@ public class Requisitioner_Account extends javax.swing.JFrame {
 
     private void btnAddRequisitionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddRequisitionActionPerformed
         SwingUtilities.invokeLater(() -> {
-            AddRequistionForm addRequistionForm = new AddRequistionForm(this);
-            addRequistionForm.setVisible(true);
+            frame = new AddRequistionForm(this);
+            frame.setVisible(true);
             dispose();
         });
     }//GEN-LAST:event_btnAddRequisitionActionPerformed

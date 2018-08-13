@@ -3,6 +3,7 @@ package Services;
 
 import Entities.JoinedTables.BorrowTool;
 import Entities.JoinedTables.ToolSupplier;
+import Entities.Supplier;
 import Entities.Tool;
 import java.util.List;
 import java.util.logging.Level;
@@ -120,5 +121,30 @@ public class ToolService {
 //        }
 //        return data;
 //    }
+
+    public static List<Tool> findByNotInSupplier(Supplier supplier) {
+        List<Tool> tools = null;
+        String hql = "SELECT t FROM Tool t WHERE t.id NOT IN ("
+                + "SELECT t.id FROM Tool t "
+                + "LEFT JOIN t.toolSuppliers ts "
+                + "LEFT JOIN ts.toolSupplierId.supplier s "
+                + "WHERE s.id=:supplierId)";
+        Session session = Utilities.HibernateUtil.getSessionFactory().openSession();
+        Query query = session.createQuery(hql);
+        query.setInteger("supplierId", supplier.getId());
+        tools = query.list();
+        return tools;
+    }
+
+    public static boolean isExisting(String column, String value) {
+        boolean existing = false;
+        String hql = "SELECT COUNT(t.code) FROM Tool t WHERE t." + column + "=:value";
+        Session session = Utilities.HibernateUtil.getSessionFactory().openSession();
+        Query query = session.createQuery(hql);
+        query.setString("value", value);
+        existing = Integer.parseInt(query.list().get(0).toString()) > 0;
+        System.out.println("COUNT: " + query.list().get(0));
+        return existing;
+    }
     
 }
